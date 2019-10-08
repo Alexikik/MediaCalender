@@ -1,0 +1,46 @@
+﻿@page "/LoginPage"
+@using MediaCalender.Shared.Containers
+@inject HttpClient Http
+@inject NavigationManager navigationManager
+
+<h1>Welcome to MedCal!</h1>
+
+<p>Please login below:</p>
+
+<div>
+    Username: <input type="text" id="username" name="username" @bind="uname" /><br>
+</div>
+<div>
+    Password: <input type="text" id="password" name="password" @bind="pword" /><br>
+</div>
+
+<button class="btn btn-primary" @onclick="Login">Login</button>
+<p>@loginResultString</p>
+
+@code {
+    string uname, pword;
+    string loginResultString;
+
+
+    public async Task Login()
+    {
+        // Sends login credentials
+        LoginCredentials loginCredentials = new LoginCredentials(uname, pword);
+        await Http.PostJsonAsync("Login/PostLogin", loginCredentials);
+
+        // Recieves answer from server if login was succesful
+        BoolContainer result = await Http.GetJsonAsync<BoolContainer>("Login/SendLoginAnswer");
+        Program.Classes.LoginStatus = result.result;
+
+        // Process depending on result
+        RefreshNavbar refreshNavbar = new RefreshNavbar();
+        if (result.result)
+        {
+            refreshNavbar.CallRequestRefresh();
+            navigationManager.NavigateTo("Calender");   // Navigates to Calender view
+        }
+        else
+            loginResultString = "Login denied";
+
+    }
+}
