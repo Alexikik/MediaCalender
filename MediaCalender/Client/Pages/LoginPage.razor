@@ -33,10 +33,10 @@
         Program.Classes.LoginStatus = result.result;
 
         // Process depending on result
-        RefreshNavbar refreshNavbar = new RefreshNavbar();
+        //RefreshNavbar refreshNavbar = new RefreshNavbar();
         if (result.result)
         {
-            refreshNavbar.CallRequestRefresh();
+            //refreshNavbar.CallRequestRefresh();
             navigationManager.NavigateTo("Calender");   // Navigates to Calender view
         }
         else
