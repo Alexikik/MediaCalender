@@ -1,6 +1,6 @@
 ﻿namespace MediaCalender.Shared.ContentTypes
 {
-    public class MediaContent
+    public abstract class MediaContent
     {
         public string name { get; set; }
 
