@@ -11,13 +11,10 @@ namespace MediaCalender.Server.CsClasses
     {
         public string name { get; set; }
         public bool loginStatus { get; set; }
-        List<MediaContent>followedContent { get; set; }
         Database database { get; set; }
 
         public Account(Database database)
         {
-            //this.name = name;
-            //this.followedContent = followedContent;
             this.database = database;
         }
 
@@ -31,8 +28,6 @@ namespace MediaCalender.Server.CsClasses
                 loginStatus = false;
 
             this.loginStatus = loginStatus;
-
-
         }
     }
 }

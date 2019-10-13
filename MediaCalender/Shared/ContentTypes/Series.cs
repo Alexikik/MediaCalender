@@ -4,10 +4,9 @@ using System.Text;
 
 namespace MediaCalender.Shared.ContentTypes
 {
-    class Series : MediaContent
+    public class Series : MediaContent
     {
-        public string name { get; set; }
-        public Series(string name) : base(name) 
+        public Series() : base() 
         { }
     }
 }

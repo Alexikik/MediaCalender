@@ -1,12 +1,67 @@
 ﻿@page "/Calender"
 @using MediaCalender.Shared.Containers
+@using MediaCalender.Shared.ContentTypes
+@using Syncfusion.EJ2.Blazor.Schedule
 @inject HttpClient Http
 
 <h1>Media Calender!</h1>
 
-
 <p>Hejsa c:</p>
 
+<EjsSchedule TValue="AppointmentData" Height="650px" CurrentView="View.Month">
+</EjsSchedule>
+
+
+<EjsCalendar></EjsCalendar>
+
+@if (movieString == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <p>@movieString.str</p>
+
+
+    <div>
+        Movie name: <input type="text" style="margin-left:4px" id="movieName" name="movieName" @bind="movieName" /><br>
+    </div>
+
+    <button class="btn btn-primary" @onclick="AddMovie">Add movie</button>
+    <p>@addMovieResultString</p>
+    @*<EjsSchedule TValue=object CurrentView="View.Month"></EjsSchedule>*@
+
+}
+
 @code {
-    //this.StateHasChanged();
+    StringContainer movieString;
+    string movieName, addMovieResultString;
+
+    protected override async Task OnInitializedAsync()
+    {
+        movieString = await Http.GetJsonAsync<StringContainer>("Calendar/GetSpecificMovieInfo");
+    }
+
+    public async Task AddMovie()
+    {
+        // Sends movie name to be added and retrieves bool about succesfulness
+        StringContainer stringContainer = new StringContainer() { str = movieName };
+        BoolContainer answer = await Http.PostJsonAsync<BoolContainer>("Calendar/PostMovieString", stringContainer);
+
+        // Process depending on result
+        if (answer.result)
+        {
+            addMovieResultString = "Nice";
+        }
+        else
+            addMovieResultString = "Damn";
+    }
+
+    public class AppointmentData
+    {
+        public int Id { get; set; }
+        public string Subject { get; set; }
+        public DateTime StartTime { get; set; }
+        public DateTime EndTime { get; set; }
+    }
 }
