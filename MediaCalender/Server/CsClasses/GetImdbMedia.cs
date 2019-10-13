@@ -15,7 +15,12 @@ namespace MediaCalender.Server.CsClasses
         public Movie getMovie(string txtMovieName)
         {
             MovieRar obj = new MovieRar();
-            string url = $"http://www.omdbapi.com/?t={txtMovieName}&apikey=24cd4afb";
+            //string url = $"http://www.omdbapi.com/?t={txtMovieName}&apikey=24cd4afb";             // Gets a movie/series
+            //string url = $"http://www.omdbapi.com/?t={txtMovieName}&season=1&apikey=24cd4afb";    // Gets a specific season
+            //string url = $"http://www.omdbapi.com/?t={txtMovieName}&season=1&episode=8&apikey=24cd4afb";      // Gets a specific episode from a specific season
+            //string url = $"http://www.omdbapi.com/?t={txtMovieName}&season=23&apikey=24cd4afb";      // South Park Season 23
+            //string url = $"http://www.omdbapi.com/?t={txtMovieName}&season=23&episode=4&apikey=24cd4afb";   // South Park S23E4
+            string url = $"http://www.omdbapi.com/?t={txtMovieName}&season=18&episode=2&apikey=24cd4afb";      // Family Guy Season 18
             using (WebClient wc = new WebClient())
             {
                 var json = wc.DownloadString(url);
@@ -28,7 +33,7 @@ namespace MediaCalender.Server.CsClasses
                 //else
                 //    Console.WriteLine("Error");
             }
-
+            
             return convertRarToMovie(obj);
         }
 
