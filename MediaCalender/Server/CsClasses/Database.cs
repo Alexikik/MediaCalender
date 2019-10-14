@@ -85,8 +85,11 @@ namespace MediaCalender.Server.CsClasses
         {
             Movie movie;
             bool result;
-            
-            movie = imdbAPI.getMovie(movieName);
+
+            //movie = imdbAPI.getMovie(movieName);
+            movie = new Movie();
+            GetImdbSeries getter = new GetImdbSeries();
+            getter.getSeries("hd");
 
             if (movie.Response == "True")
             {
