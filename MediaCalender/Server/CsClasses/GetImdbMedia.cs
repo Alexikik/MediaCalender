@@ -37,7 +37,7 @@ namespace MediaCalender.Server.CsClasses
                 //else
                 //    Console.WriteLine("Error");
             }
-            
+
             return convertRarToMovie(obj);
         }
 
@@ -92,30 +92,18 @@ namespace MediaCalender.Server.CsClasses
 
     public class GetImdbSeries
     {
-        public Series getSeries(string txtSeriesName)
-        {
-            Series series;
-            string url = $"https://api.thetvdb.com/search/series?name=South%20Park";
-            using (WebClient webClient = new WebClient())
-            {
-                webClient.Headers.Add("Authorization:-Bearer", "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE1NzExNTcwNjgsImlkIjoiTWVkQ2FsIiwib3JpZ19pYXQiOjE1NzEwNzA2NjgsInVzZXJpZCI6NTQwNjMyLCJ1c2VybmFtZSI6IkFsZXhpazE5OThtaXUifQ.D240p8NzQL7xMiaHyAeF6PWeKVJ_IG987-r0amNuE1ix4NTPEHAsmvcnzRGyhsE6CMPJtU4Xi6Bs0QiX4mpqS5txEQCV7ZmIngV4hCpwUtxt2XOe7noBlPfSqkTHcvTGS5QlUqwn0GpZA1LxadkzpfHpbcrREZf-aJ472gXE_1iaOAlmUJZClVri9B_eTSPFeOYR5OtevW3BSXx0dSO5GfRDjtWTTpyrcfbFKYIYziKDK5kWtgt2gvuSgK2M2t58zfMZ_WwfNyDnoXm9gPxzve1M5hTSsUYHrjGpE7tUGLPCSNEFHMP_Z7yudpT7tPtoPjxhR9Ij6XowWIgI9RTn_A");
-                webClient.Headers[HttpRequestHeader.ContentType] = "application/json";
-                
-                var json = webClient.DownloadString(url);
-                //json.Replace("'", "´"); // Replaces "'" with "´"
-                JavaScriptSerializer oJS = new JavaScriptSerializer();
-                Console.WriteLine(json);
-                series = oJS.Deserialize<Series>(json);
-            }
+        Token Token { get; }
+        readonly string ApiKey = "43UZATVN8H64OAW8";
 
-            return new Series();
+        public GetImdbSeries()
+        {
+            Task<Token> token = SetToken();
+            this.Token = token.Result;
         }
 
         //Sets the token from the apikey from tvdb
-        private async Task SetToken(string ApiKey)
+        public async Task<Token> SetToken()
         {
-
-
             using (HttpClient client = new HttpClient())
             {
                 //Url to TVDB
@@ -136,18 +124,43 @@ namespace MediaCalender.Server.CsClasses
                     throw new Exception(resp.ReasonPhrase);
                 }
 
-                //Read into byte array and them create a memory stream
-                byte[] byteArray = Encoding.UTF8.GetBytes(respString);
-                MemoryStream stream1 = new MemoryStream(byteArray);
-
-                //Create serializer and read the stream into a Token object
-                DataContractJsonSerializer serializer = new DataContractJsonSerializer(typeof(string));
-                _token = serializer.ReadObject(stream1) as Token;
-
-                //Set global token for debugging
-                tokenString = _token.token;
+                // Deserialize string into token
+                JavaScriptSerializer oJS = new JavaScriptSerializer();
+                return oJS.Deserialize<Token>(respString);
             }
         }
 
+        // Gets a series from the API
+        public async Task getSeries(string txtSeriesName)
+        {
+            using (HttpClient client = new HttpClient())
+            {
+                //Url to TVDB
+                //Uri url = new Uri("https://api.thetvdb.com/search/series?name=South%20Park");
+                //Uri url = new Uri("https://api.thetvdb.com/episodes/75897");
+                Uri url = new Uri("https://api.thetvdb.com/series/75897/episodes/query?airedSeason=23&airedEpisode=5");
+
+                //Set Accept request header
+                client.DefaultRequestHeaders.Add("Accept", "application/json");
+                client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", Token.token);
+
+                //Setup request message with json apikey and content-type header
+                HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Get, url);
+                //request.Content = new StringContent("Authorization: Bearer " + Token.token, Encoding.UTF8, "application/json");
+                //request.Headers.Add("Authorization", $"{Token.token}");
+
+                //Send via post, get response, read content into string, check to be sure it was OK
+                HttpResponseMessage resp = await client.SendAsync(request);
+                string respString = await resp.Content.ReadAsStringAsync();
+                if (resp.ReasonPhrase != "OK")
+                {
+                    throw new Exception(resp.ReasonPhrase);
+                }
+
+                // Deserialize string into token
+                JavaScriptSerializer oJS = new JavaScriptSerializer();
+                Token t = oJS.Deserialize<Token>(respString);
+            }
+        }
     }
 }

@@ -90,6 +90,7 @@ namespace MediaCalender.Server.CsClasses
             movie = new Movie();
             GetImdbSeries getter = new GetImdbSeries();
             getter.getSeries("hd");
+            //getter.SetToken();
 
             if (movie.Response == "True")
             {
