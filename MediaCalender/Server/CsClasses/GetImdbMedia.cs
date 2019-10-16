@@ -138,7 +138,7 @@ namespace MediaCalender.Server.CsClasses
                 //Url to TVDB
                 //Uri url = new Uri("https://api.thetvdb.com/search/series?name=South%20Park");
                 //Uri url = new Uri("https://api.thetvdb.com/episodes/75897");
-                Uri url = new Uri("https://api.thetvdb.com/series/75897/episodes/query?airedSeason=23&airedEpisode=5");
+                Uri url = new Uri("https://api.thetvdb.com/series/75897/episodes/query?airedSeason=22&airedEpisode=5");
 
                 //Set Accept request header
                 client.DefaultRequestHeaders.Add("Accept", "application/json");
@@ -146,8 +146,6 @@ namespace MediaCalender.Server.CsClasses
 
                 //Setup request message with json apikey and content-type header
                 HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Get, url);
-                //request.Content = new StringContent("Authorization: Bearer " + Token.token, Encoding.UTF8, "application/json");
-                //request.Headers.Add("Authorization", $"{Token.token}");
 
                 //Send via post, get response, read content into string, check to be sure it was OK
                 HttpResponseMessage resp = await client.SendAsync(request);
@@ -158,8 +156,10 @@ namespace MediaCalender.Server.CsClasses
                 }
 
                 // Deserialize string into token
+                Episode episode = new Episode();
                 JavaScriptSerializer oJS = new JavaScriptSerializer();
-                Token t = oJS.Deserialize<Token>(respString);
+                episode = oJS.Deserialize<Episode>(respString);
+                Console.WriteLine();
             }
         }
     }
