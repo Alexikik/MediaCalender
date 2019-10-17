@@ -11,7 +11,7 @@ namespace MediaCalender.Shared.ContentTypes
         public string Title { get; set; }
         public int EpisodeNumber { get; set; }
         public int SeasonNumber { get; set; }
-        public string FirstAired { get; set; }
+        public string firstAired { get; set; }
         public string GuestStars { get; set; }
         public string ImdbId { get; set; }
         public string Language { get; set; }

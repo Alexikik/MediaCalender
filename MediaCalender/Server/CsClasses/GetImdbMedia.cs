@@ -149,7 +149,7 @@ namespace MediaCalender.Server.CsClasses
 
                 //Send via post, get response, read content into string, check to be sure it was OK
                 HttpResponseMessage resp = await client.SendAsync(request);
-                string respString = await resp.Content.ReadAsStringAsync();
+                var respString = await resp.Content.ReadAsStringAsync();
                 if (resp.ReasonPhrase != "OK")
                 {
                     throw new Exception(resp.ReasonPhrase);
