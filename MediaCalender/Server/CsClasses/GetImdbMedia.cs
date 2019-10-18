@@ -11,6 +11,7 @@ using System.Net.Http;
 using System.Text;
 using System.IO;
 using System.Runtime.Serialization.Json;
+using Newtonsoft.Json;
 
 namespace MediaCalender.Server.CsClasses
 {
@@ -92,6 +93,8 @@ namespace MediaCalender.Server.CsClasses
 
     public class GetImdbSeries
     {
+        // {"apikey":"43UZATVN8H64OAW8","username":"Alexik1998miu","userkey":"OOA6Z0AKHTI3BPS8"}
+        // eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE1NzE0MzQ2MzgsImlkIjoiTWVkQ2FsIiwib3JpZ19pYXQiOjE1NzEzNDgyMzgsInVzZXJpZCI6NTQwNjMyLCJ1c2VybmFtZSI6IkFsZXhpazE5OThtaXUifQ.R5HDGh7ePbF9uEZtcGU0_UTpUzL2Jh0MWx5rmVQEQJcr708tqavduiL7ObU46A7dOtTwVG0E_fR902sAYg7Viq1LhCMNWlheKKC0258k9c3vbm2zOb8Z1HdlddQ61r1JfWM7Yr-RzMFLYVoXpgjFGOOm9ekBfFSgwinWLesOSmTlfT9xTxZbnny9RI1EfmpQUhR6qe2hl5OCXPBdzDa130uO4S6z-lz2L44dq57Tq5BAR8lip_eSnSGCNvWS4XmW52tcDqazZq-lN-WWO-rvs-4loiDokM4V_AK_3fK0lWMTTOXsP-ZjgFWx4E-cZiskNq0wxPbUvgdmSHrWCo7Jpw
         Token Token { get; }
         readonly string ApiKey = "43UZATVN8H64OAW8";
 
@@ -131,14 +134,15 @@ namespace MediaCalender.Server.CsClasses
         }
 
         // Gets a series from the API
-        public async Task getSeries(string txtSeriesName)
+        public async Task<Episode> getSeries(string txtSeriesName)
         {
             using (HttpClient client = new HttpClient())
             {
                 //Url to TVDB
                 //Uri url = new Uri("https://api.thetvdb.com/search/series?name=South%20Park");
                 //Uri url = new Uri("https://api.thetvdb.com/episodes/75897");
-                Uri url = new Uri("https://api.thetvdb.com/series/75897/episodes/query?airedSeason=22&airedEpisode=5");
+                //Uri url = new Uri("https://api.thetvdb.com/series/75897");
+                Uri url = new Uri("https://api.thetvdb.com/series/75897/episodes/query?airedSeason=23&airedEpisode=5");
 
                 //Set Accept request header
                 client.DefaultRequestHeaders.Add("Accept", "application/json");
@@ -156,10 +160,11 @@ namespace MediaCalender.Server.CsClasses
                 }
 
                 // Deserialize string into token
-                Episode episode = new Episode();
-                JavaScriptSerializer oJS = new JavaScriptSerializer();
-                episode = oJS.Deserialize<Episode>(respString);
-                Console.WriteLine();
+                RarEpisode rarEpisode = new RarEpisode();
+                rarEpisode = JsonConvert.DeserializeObject<RarEpisode>(respString);
+                Episode episode = rarEpisode.convertToEpisode();
+
+                return episode;
             }
         }
     }

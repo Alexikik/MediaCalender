@@ -81,7 +81,7 @@ namespace MediaCalender.Server.CsClasses
             return movie.ToString();
         }
 
-        public BoolContainer AddMovie(string movieName)
+        public async Task<BoolContainer> AddMovieAsync(string movieName)
         {
             Movie movie;
             bool result;
@@ -89,7 +89,10 @@ namespace MediaCalender.Server.CsClasses
             //movie = imdbAPI.getMovie(movieName);
             movie = new Movie();
             GetImdbSeries getter = new GetImdbSeries();
-            getter.getSeries("hd");
+            //Task<Episode> TEpisode = await getter.getSeries("hd");
+            Episode episode = await getter.getSeries("hd");
+            //Episode episode = TEpisode.Result;
+            AddEpisodeToDatabase(episode);
             //getter.SetToken();
 
             if (movie.Response == "True")
@@ -133,5 +136,15 @@ namespace MediaCalender.Server.CsClasses
 
         //    return result;
         //}
+
+        public void AddEpisodeToDatabase(Episode episode)
+        {
+            // Der mangler MANGE, også ind imellem dem der er!
+            string sql = $"Insert into episodeLibary (Id, AiredSeason, AiredSeasonId, EpisodeName, FirstAired)" +
+                $" values ('{episode.id}', '{episode.airedSeason}', '{episode.airedSeasonID}'" +
+                $", '{episode.episodeName.Replace("'", "´")}', '{episode.firstAired.Replace("'", "´")}')";
+
+            SQLiteDataReader reader = GetSqlReader(sql);
+        }
     }
 }

@@ -4,9 +4,12 @@ using System.Text;
 
 namespace MediaCalender.Shared.ContentTypes
 {
-    public class Series : MediaContent
+    public class RarSeries
     {
-        #region info
+        public RarSeriesData data { get; set; }
+    }
+    public class RarSeriesData
+    {
         public int id { get; set; }
         public string seriesName { get; set; }
         public List<object> aliases { get; set; }
@@ -30,9 +33,6 @@ namespace MediaCalender.Shared.ContentTypes
         public double siteRating { get; set; }
         public int siteRatingCount { get; set; }
         public string slug { get; set; }
-        #endregion info
-
-        public Series() : base() 
-        { }
     }
+
 }

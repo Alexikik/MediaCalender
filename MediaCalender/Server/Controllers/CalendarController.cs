@@ -22,10 +22,10 @@ namespace MediaCalender.Server.Controllers
 
         // Adds a specific movie by name and returns a bool indicating if the process was succesful
         [HttpPost("[action]")]
-        public BoolContainer PostMovieString([FromBody]StringContainer stringContainer)
+        public async Task<BoolContainer> PostMovieString([FromBody]StringContainer stringContainer)
         {
             BoolContainer answer;
-            answer = Program.Classes.database.AddMovie(stringContainer.str);
+            answer = await Program.Classes.database.AddMovieAsync(stringContainer.str);
 
             return answer;
         }
