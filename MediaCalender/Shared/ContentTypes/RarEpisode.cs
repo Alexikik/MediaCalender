@@ -62,23 +62,17 @@ namespace MediaCalender.Shared.ContentTypes
             episode.overview = this.data[0].overview;
             episode.productionCode = this.data[0].productionCode;
             episode.showUrl = this.data[0].showUrl;
-
-            //result = Int32.TryParse(this.data[0].absoluteNumber, out intTemp);
-            //if (result)
-            //    movie.Metascore = intTemp;
-            //else
-            //    movie.Metascore = 0;
-            episode.absoluteNumber = this.data[0].absoluteNumber;
+            episode.absoluteNumber = Convert.ToInt32(this.data[0].absoluteNumber);
             episode.filename = this.data[0].filename;
-            episode.seriesId = this.data[0].seriesId;
-            episode.lastUpdatedBy = this.data[0].lastUpdatedBy;
-            episode.thumbAuthor = this.data[0].thumbAuthor;
+            //episode.seriesId = this.data[0].seriesId;
+            //episode.lastUpdatedBy = this.data[0].lastUpdatedBy;
+            //episode.thumbAuthor = this.data[0].thumbAuthor;
             episode.thumbAdded = this.data[0].thumbAdded;
             episode.thumbWidth = this.data[0].thumbWidth;
             episode.thumbHeight = this.data[0].thumbHeight;
             episode.imdbId = this.data[0].imdbId;
-            episode.siteRating = this.data[0].siteRating;
-            episode.siteRatingCount = this.data[0].siteRatingCount;
+            //episode.siteRating = this.data[0].siteRating;
+            //episode.siteRatingCount = this.data[0].siteRatingCount;
 
 
             return episode;
@@ -116,10 +110,12 @@ namespace MediaCalender.Shared.ContentTypes
         public string showUrl { get; set; }
         public int lastUpdated { get; set; }
         public string dvdDiscid { get; set; }
-        public int dvdSeason { get; set; }
-        public int dvdEpisodeNumber { get; set; }
+        //public int dvdSeason { get; set; }
+        public string dvdSeason { get; set; }
+        //public int dvdEpisodeNumber { get; set; }
         public object dvdChapter { get; set; }
-        public int absoluteNumber { get; set; }
+        //public int absoluteNumber { get; set; }
+        public string absoluteNumber { get; set; }
         public string filename { get; set; }
         public int seriesId { get; set; }
         public int lastUpdatedBy { get; set; }
