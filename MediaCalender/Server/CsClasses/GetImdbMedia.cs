@@ -134,25 +134,23 @@ namespace MediaCalender.Server.CsClasses
         }
 
         // Gets a series from the API
-        public async Task<Episode> getSeries(string txtSeriesName)
+        public async Task<Episode> getEpisode(string EpisodeName)
         {
             using (HttpClient client = new HttpClient())
             {
-                //Url to TVDB
-                //Uri url = new Uri("https://api.thetvdb.com/search/series?name=South%20Park");
+                // Url to TVDB
                 //Uri url = new Uri("https://api.thetvdb.com/episodes/75897");
-                //Uri url = new Uri("https://api.thetvdb.com/series/75897");
-                //Uri url = new Uri("https://api.thetvdb.com/series/75897/episodes/query?airedSeason=23&airedEpisode=5");
-                Uri url = new Uri("https://api.thetvdb.com/series/75978/episodes/query?airedSeason=18&airedEpisode=6");   // Family guy
+                Uri url = new Uri("https://api.thetvdb.com/series/75897/episodes/query?airedSeason=23&airedEpisode=6");     // South Park
+                //Uri url = new Uri("https://api.thetvdb.com/series/75978/episodes/query?airedSeason=18&airedEpisode=6");   // Family Guy
 
-                //Set Accept request header
+                // Set Accept request header
                 client.DefaultRequestHeaders.Add("Accept", "application/json");
                 client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", Token.token);
 
-                //Setup request message with json apikey and content-type header
+                // Setup request message with json apikey and content-type header
                 HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Get, url);
 
-                //Send via post, get response, read content into string, check to be sure it was OK
+                // Send via post, get response, read content into string, check to be sure it was OK
                 HttpResponseMessage resp = await client.SendAsync(request);
                 var respString = await resp.Content.ReadAsStringAsync();
                 if (resp.ReasonPhrase != "OK")
@@ -166,6 +164,68 @@ namespace MediaCalender.Server.CsClasses
                 Episode episode = rarEpisode.convertToEpisode();
 
                 return episode;
+            }
+        }
+
+        public async Task<Series> GetSeries(int seriesId)
+        {
+            using (HttpClient client = new HttpClient())
+            {
+                // Url to TVDB
+                Uri url = new Uri($"https://api.thetvdb.com/series/{seriesId}");
+
+                // Set Accept request header
+                client.DefaultRequestHeaders.Add("Accept", "application/json");
+                client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", Token.token);
+
+                // Setup request message with json apikey and content-type header
+                HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Get, url);
+
+                // Send via post, get response, read content into string, check to be sure it was OK
+                HttpResponseMessage resp = await client.SendAsync(request);
+                var respString = await resp.Content.ReadAsStringAsync();
+                if (resp.ReasonPhrase != "OK")
+                {
+                    throw new Exception(resp.ReasonPhrase);
+                }
+
+                // Deserialize string into token
+                RarSeries rarSeries = new RarSeries();
+                rarSeries = JsonConvert.DeserializeObject<RarSeries>(respString);
+                Series series = rarSeries.convertToSeries();
+
+                return series;
+            }
+        }
+
+        public async Task<int> SearchForSeries(string seriesName)
+        {
+            using (HttpClient client = new HttpClient())
+            {
+                // Url to TVDB
+                Uri url = new Uri($"https://api.thetvdb.com/search/series?name={seriesName.Replace(" ", "%20")}");
+
+                // Set Accept request header
+                client.DefaultRequestHeaders.Add("Accept", "application/json");
+                client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", Token.token);
+
+                // Setup request message with json apikey and content-type header
+                HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Get, url);
+
+                // Send via post, get response, read content into string, check to be sure it was OK
+                HttpResponseMessage resp = await client.SendAsync(request);
+                var respString = await resp.Content.ReadAsStringAsync();
+                if (resp.ReasonPhrase != "OK")
+                {
+                    return -1;
+                    throw new Exception(resp.ReasonPhrase);
+                }
+
+                // Deserialize string into token
+                SeachResult seachResult = new SeachResult();
+                seachResult = JsonConvert.DeserializeObject<SeachResult>(respString);
+
+                return seachResult.data[0].id;
             }
         }
     }

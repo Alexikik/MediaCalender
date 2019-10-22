@@ -29,6 +29,11 @@ else
 
     <button class="btn btn-primary" @onclick="AddMovie">Add movie</button>
     <p>@addMovieResultString</p>
+
+    <button class="btn btn-primary" @onclick="AddSeries">Add series</button>
+    <p>@addMovieResultString</p>
+    <div> [innderHTML]=@addMovieResultString</div>
+    <div> [innderHTML]="Hejsa<br />buh"></div>
     @*<EjsSchedule TValue=object CurrentView="View.Month"></EjsSchedule>*@
 
 }
@@ -55,6 +60,21 @@ else
         }
         else
             addMovieResultString = "Damn";
+    }
+
+    public async Task AddSeries()
+    {
+        // Sends movie name to be added and retrieves bool about succesfulness
+        StringContainer stringContainer = new StringContainer() { str = movieName };
+        ResultContainer answer = await Http.PostJsonAsync<ResultContainer>("Calendar/AddFolSeries", stringContainer);
+
+        // Process depending on result
+        if (answer.result)
+        {
+            addMovieResultString = $"{movieName} added to followed media";
+        }
+        else
+            addMovieResultString = $"{movieName} could not be added <br /> {answer.errorMessage}";
     }
 
     public class AppointmentData

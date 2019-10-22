@@ -23,7 +23,7 @@ namespace MediaCalender.Shared.ContentTypes
         public string overview { get; set; }
         public string productionCode { get; set; }
         public string showUrl { get; set; }
-        //public int lastUpdated { get; set; }
+        public int lastUpdated { get; set; }
         //public string dvdDiscid { get; set; }
         //public int dvdSeason { get; set; }
         //public int dvdEpisodeNumber { get; set; }
@@ -35,7 +35,7 @@ namespace MediaCalender.Shared.ContentTypes
         //public object airsAfterSeason { get; set; }
         //public object airsBeforeSeason { get; set; }
         //public object airsBeforeEpisode { get; set; }
-        public int thumbAuthor { get; set; }
+        //public int thumbAuthor { get; set; }
         public string thumbAdded { get; set; }
         public string thumbWidth { get; set; }
         public string thumbHeight { get; set; }
@@ -45,7 +45,9 @@ namespace MediaCalender.Shared.ContentTypes
         #endregion info
 
         public Episode() : base()
-        { }
+        {
+            overview = "";
+        }
     }
 
     

@@ -7,6 +7,61 @@ namespace MediaCalender.Shared.ContentTypes
     public class RarSeries
     {
         public RarSeriesData data { get; set; }
+
+        public Series convertToSeries()
+        {
+            Series series = new Series();
+            string temp;
+            int intTemp;
+            bool result;
+
+            series.id = this.data.id;
+            series.seriesName = this.data.seriesName;
+
+            if (this.data.aliases.Count > 0)
+            {
+                temp = this.data.aliases[0].ToString();
+                for (int i = 1; i < this.data.aliases.Count - 1; i++)
+                {
+                    temp += ", " + this.data.aliases[i];
+                }
+                series.aliases = temp;
+            }
+            else
+                series.aliases = "";
+            series.banner = this.data.banner;
+            series.seriesId = this.data.seriesId;
+            series.status = this.data.status;
+            series.firstAired = this.data.firstAired;
+            series.network = this.data.network;
+            series.networkId = this.data.networkId;
+            series.runtime = this.data.runtime;
+
+            if (this.data.genre.Count > 0)
+            {
+                temp = this.data.genre[0].ToString();
+                for (int i = 1; i < this.data.genre.Count - 1; i++)
+                {
+                    temp += ", " + this.data.genre[i];
+                }
+                series.genre = temp;
+            }
+            else
+                series.genre = "";
+            series.overview = this.data.overview;
+            series.lastUpdated = this.data.lastUpdated;
+            series.airsDayOfWeek = this.data.airsDayOfWeek;
+            series.airsTime = this.data.airsTime;
+            series.rating = this.data.rating;
+            series.imdbId = this.data.imdbId;
+            series.zap2itId = this.data.zap2itId;
+            series.added = this.data.added;
+            series.siteRating = this.data.siteRating;
+            series.siteRatingCount = this.data.siteRatingCount;
+            series.slug = this.data.slug;
+
+            return series;
+        }
     }
     public class RarSeriesData
     {

@@ -60,16 +60,17 @@ namespace MediaCalender.Shared.ContentTypes
             else
                 episode.writers = "";
             episode.overview = this.data[0].overview;
+            episode.overview = ((this.data[0].overview != null) ? (this.data[0].overview) : (""));
             episode.productionCode = this.data[0].productionCode;
             episode.showUrl = this.data[0].showUrl;
             episode.absoluteNumber = Convert.ToInt32(this.data[0].absoluteNumber);
             episode.filename = this.data[0].filename;
-            //episode.seriesId = this.data[0].seriesId;
-            //episode.lastUpdatedBy = this.data[0].lastUpdatedBy;
+            episode.seriesId = this.data[0].seriesId;
+            episode.lastUpdatedBy = this.data[0].lastUpdatedBy;
             //episode.thumbAuthor = this.data[0].thumbAuthor;
             episode.thumbAdded = this.data[0].thumbAdded;
-            episode.thumbWidth = this.data[0].thumbWidth;
-            episode.thumbHeight = this.data[0].thumbHeight;
+            episode.thumbWidth = ((this.data[0].thumbWidth != null) ? (this.data[0].thumbWidth) : (""));
+            episode.thumbHeight = ((this.data[0].thumbHeight != null) ? (this.data[0].thumbHeight) : (""));
             episode.imdbId = this.data[0].imdbId;
             //episode.siteRating = this.data[0].siteRating;
             //episode.siteRatingCount = this.data[0].siteRatingCount;
@@ -129,7 +130,5 @@ namespace MediaCalender.Shared.ContentTypes
         public string imdbId { get; set; }
         public int siteRating { get; set; }
         public int siteRatingCount { get; set; }
-
-        
     }
 }

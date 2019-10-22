@@ -90,8 +90,8 @@ namespace MediaCalender.Server.CsClasses
             movie = new Movie();
             GetImdbSeries getter = new GetImdbSeries();
             //Task<Episode> TEpisode = await getter.getSeries("hd");
-            Episode episode = await getter.getSeries("hd");
-            //Episode episode = TEpisode.Result;
+            Episode episode = await getter.getEpisode("hd");
+            ////Episode episode = TEpisode.Result;
             AddEpisodeToDatabase(episode);
             //getter.SetToken();
 
@@ -104,6 +104,42 @@ namespace MediaCalender.Server.CsClasses
                 result = false;
 
             return new BoolContainer() { result = result };
+        }
+
+        public async Task<ResultContainer> AddFolSeries(string seriesName)
+        {
+            Series series;
+            ResultContainer result = new ResultContainer();
+            GetImdbSeries getter = new GetImdbSeries();
+            int seriesId;
+
+            // Searches API for seriesID
+            seriesId = await getter.SearchForSeries(seriesName);
+            if (seriesId == -1)
+            {
+                result.result = false;
+                result.errorMessage = "Series not found";
+                return result;
+            }
+
+
+            // Gets info about series
+            series = await getter.GetSeries(seriesId);
+
+            if (series.seriesName != null)
+            {
+                // Adds series to database
+                AddSeriesToDatabase(series);
+                result.result = true;
+            }
+            else
+            {
+                // Creates error message
+                result.result = false;
+                result.errorMessage = "Series id not found";
+            }
+
+            return result;
         }
 
         void AddMovieToDatabase(Movie movie)
@@ -120,31 +156,57 @@ namespace MediaCalender.Server.CsClasses
             SQLiteDataReader reader = GetSqlReader(sql);
         }
 
-        //public string PrintString()
-        //{
-        //    string sql = "select * from User";
-        //    SQLiteDataReader reader = GetSqlReader(sql);
+        public void AddSeriesToDatabase(Series series)
+        {
+            string sql = $"Insert into seriesLibary (Id, SeriesName, Aliases, Banner, SeriesId, Status, FirstAired, Network, NetworkId, Runtime, Genre, Overview, LastUpdated, AirsDayOfWeek, AirsTime, Rating, ImdbId, Zap2itId, Added, SiteRating, SiteRatingCount, Slug)" +
+                $" values ('{series.id}', '{series.seriesName.Replace("'", "´")}', '{series.aliases.Replace("'", "´")}'" +
+                $", '{series.banner.Replace("'", "´")}', '{series.seriesId.Replace("'", "´")}'" +
+                $", '{series.status.Replace("'", "´")}', '{series.firstAired.Replace("'", "´")}'" +
+                $", '{series.firstAired.Replace("'", "´")}', '{series.network.Replace("'", "´")}'" +
+                $", '{series.runtime.Replace("'", "´")}', '{series.genre.Replace("'", "´")}'" +
+                $", '{series.overview.Replace("'", "´")}', '{series.lastUpdated}'" +
+                $", '{series.airsDayOfWeek.Replace("'", "´")}', '{series.airsTime.Replace("'", "´")}'" +
+                $", '{series.rating.Replace("'", "´")}', '{series.imdbId.Replace("'", "´")}'" +
+                $", '{series.zap2itId.Replace("'", "´")}', '{series.added.Replace("'", "´")}'" +
+                $", '{series.siteRating}', '{series.siteRatingCount}', '{series.slug}')";
 
-        //    string result = null;
-        //    while (reader.Read())
-        //    {
-        //        result += reader["Key"].ToString()
-        //        + reader["Username"].ToString()
-        //        + "[]"
-        //        + reader["Password"].ToString();
-        //    }
-
-        //    return result;
-        //}
+            SQLiteDataReader reader = GetSqlReader(sql);
+        }
 
         public void AddEpisodeToDatabase(Episode episode)
         {
-            // Der mangler MANGE, også ind imellem dem der er!
-            string sql = $"Insert into episodeLibary (Id, AiredSeason, AiredSeasonId, EpisodeName, FirstAired)" +
+            string sql = $"Insert into episodeLibary (Id, AiredSeason, AiredSeasonId, AiredSeasonNumber, EpisodeName, FirstAired, GuestStars, Director, Directors, Writers, Overview, ProductionCode, ShowUrl, LastUpdated, AbsoluteNumber, Filename, SeriesId, LastUpdatedBy, ThumbAdded, ThumbWidth, ThumbHeight, ImdbId, SiteRating, SiteRatingCount)" +
                 $" values ('{episode.id}', '{episode.airedSeason}', '{episode.airedSeasonID}'" +
-                $", '{episode.episodeName.Replace("'", "´")}', '{episode.firstAired.Replace("'", "´")}')";
+                $", '{episode.airedEpisodeNumber}', '{episode.episodeName.Replace("'", "´")}'" +
+                $", '{episode.firstAired.Replace("'", "´")}', '{episode.guestStars.Replace("'", "´")}'" +
+                $", '{episode.director.Replace("'", "´")}', '{episode.directors.Replace("'", "´")}'" +
+                $", '{episode.writers.Replace("'", "´")}', '{episode.overview.Replace("'", "´")}'" +
+                $", '{episode.productionCode.Replace("'", "´")}', '{episode.showUrl.Replace("'", "´")}'" +
+                $", '{episode.lastUpdated}', '{episode.absoluteNumber}', '{episode.filename.Replace("'", "´")}'" +
+                $", '{episode.seriesId}', '{episode.lastUpdatedBy}', '{episode.thumbAdded.Replace("'", "´")}'" +
+                $", '{episode.thumbWidth.Replace("'", "´")}', '{episode.thumbHeight.Replace("'", "´")}'" +
+                $", '{episode.imdbId.Replace("'", "´")}', '{episode.siteRating}', '{episode.siteRatingCount}')";
 
             SQLiteDataReader reader = GetSqlReader(sql);
         }
     }
 }
+
+
+
+//public string PrintString()
+//{
+//    string sql = "select * from User";
+//    SQLiteDataReader reader = GetSqlReader(sql);
+
+//    string result = null;
+//    while (reader.Read())
+//    {
+//        result += reader["Key"].ToString()
+//        + reader["Username"].ToString()
+//        + "[]"
+//        + reader["Password"].ToString();
+//    }
+
+//    return result;
+//}

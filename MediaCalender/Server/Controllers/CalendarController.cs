@@ -29,5 +29,14 @@ namespace MediaCalender.Server.Controllers
 
             return answer;
         }
+
+        [HttpPost("[action]")]
+        public async Task<ResultContainer> AddFolSeries([FromBody]StringContainer stringContainer)
+        {
+            ResultContainer result;
+            result = await Program.Classes.database.AddFolSeries(stringContainer.str);
+
+            return result;
+        }
     }
 }
