@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using MediaCalender.Shared.Containers;
+using MediaCalender.Shared.ContentTypes;
 
 namespace MediaCalender.Server.Controllers
 {
@@ -37,6 +38,15 @@ namespace MediaCalender.Server.Controllers
             result = await Program.Classes.database.AddFolSeries(stringContainer.str);
 
             return result;
+        }
+
+        [HttpPost("[action]")]
+        public async Task<List<Episode>> GetAllEpisodes([FromBody]StringContainer stringContainer)
+        {
+            List<Episode> episodeList;
+            episodeList = await Program.Classes.database.GetAllEpisodes();
+
+            return episodeList;
         }
     }
 }

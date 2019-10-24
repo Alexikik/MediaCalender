@@ -9,69 +9,69 @@ namespace MediaCalender.Shared.ContentTypes
         //public Links links { get; set; }
         public List<RarEpisodeData> data { get; set; }
 
-        public Episode convertToEpisode()
+        public Episode convertToEpisode(int episodeToExtract)
         {
             Episode episode = new Episode();
             string temp;
             int intTemp;
             bool result;
 
-            episode.id = this.data[0].id;
-            episode.airedSeason = this.data[0].airedSeason;
-            episode.airedSeasonID = this.data[0].airedSeasonID;
-            episode.airedEpisodeNumber = this.data[0].airedEpisodeNumber;
-            episode.episodeName = this.data[0].episodeName;
-            episode.firstAired = this.data[0].firstAired;
+            episode.id = this.data[episodeToExtract].id;
+            episode.airedSeason = this.data[episodeToExtract].airedSeason;
+            episode.airedSeasonID = this.data[episodeToExtract].airedSeasonID;
+            episode.airedEpisodeNumber = this.data[episodeToExtract].airedEpisodeNumber;
+            episode.episodeName = this.data[episodeToExtract].episodeName;
+            episode.firstAired = this.data[episodeToExtract].firstAired;
 
-            if (this.data[0].guestStars.Count > 0)
+            if (this.data[episodeToExtract].guestStars.Count > 0)
             {
-                temp = this.data[0].guestStars[0].ToString();
-                for (int i = 1; i < this.data[0].guestStars.Count - 1; i++)
+                temp = this.data[episodeToExtract].guestStars[0].ToString();
+                for (int i = 1; i < this.data[episodeToExtract].guestStars.Count - 1; i++)
                 {
-                    temp += ", " + this.data[0].guestStars[i];
+                    temp += ", " + this.data[episodeToExtract].guestStars[i];
                 }
                 episode.guestStars = temp;
             }
             else
                 episode.guestStars = "";
-            episode.director = this.data[0].director;
+            episode.director = this.data[episodeToExtract].director;
 
-            if (this.data[0].directors.Count > 0)
+            if (this.data[episodeToExtract].directors.Count > 0)
             {
-                temp = this.data[0].directors[0].ToString();
-                for (int i = 1; i < this.data[0].directors.Count - 1; i++)
+                temp = this.data[episodeToExtract].directors[0].ToString();
+                for (int i = 1; i < this.data[episodeToExtract].directors.Count - 1; i++)
                 {
-                    temp += ", " + this.data[0].directors[i];
+                    temp += ", " + this.data[episodeToExtract].directors[i];
                 }
                 episode.directors = temp;
             }
             else
                 episode.directors = "";
 
-            if (this.data[0].writers.Count > 0)
+            if (this.data[episodeToExtract].writers.Count > 0)
             {
-                temp = this.data[0].writers[0].ToString();
-                for (int i = 1; i < this.data[0].writers.Count - 1; i++)
+                temp = this.data[episodeToExtract].writers[0].ToString();
+                for (int i = 1; i < this.data[episodeToExtract].writers.Count - 1; i++)
                 {
-                    temp += ", " + this.data[0].writers[i];
+                    temp += ", " + this.data[episodeToExtract].writers[i];
                 }
                 episode.writers = temp;
             }
             else
                 episode.writers = "";
-            episode.overview = this.data[0].overview;
-            episode.overview = ((this.data[0].overview != null) ? (this.data[0].overview) : (""));
-            episode.productionCode = this.data[0].productionCode;
-            episode.showUrl = this.data[0].showUrl;
-            episode.absoluteNumber = Convert.ToInt32(this.data[0].absoluteNumber);
-            episode.filename = this.data[0].filename;
-            episode.seriesId = this.data[0].seriesId;
-            episode.lastUpdatedBy = this.data[0].lastUpdatedBy;
+            //episode.overview = this.data[0].overview;
+            episode.overview = ((this.data[episodeToExtract].overview != null) ? (this.data[episodeToExtract].overview) : (""));
+            episode.productionCode = this.data[episodeToExtract].productionCode;
+            episode.showUrl = this.data[episodeToExtract].showUrl;
+            episode.absoluteNumber = Convert.ToInt32(this.data[episodeToExtract].absoluteNumber);
+            episode.filename = this.data[episodeToExtract].filename;
+            episode.seriesId = this.data[episodeToExtract].seriesId;
+            episode.lastUpdatedBy = this.data[episodeToExtract].lastUpdatedBy;
             //episode.thumbAuthor = this.data[0].thumbAuthor;
-            episode.thumbAdded = this.data[0].thumbAdded;
-            episode.thumbWidth = ((this.data[0].thumbWidth != null) ? (this.data[0].thumbWidth) : (""));
-            episode.thumbHeight = ((this.data[0].thumbHeight != null) ? (this.data[0].thumbHeight) : (""));
-            episode.imdbId = this.data[0].imdbId;
+            episode.thumbAdded = this.data[episodeToExtract].thumbAdded;
+            episode.thumbWidth = ((this.data[episodeToExtract].thumbWidth != null) ? (this.data[episodeToExtract].thumbWidth) : (""));
+            episode.thumbHeight = ((this.data[episodeToExtract].thumbHeight != null) ? (this.data[episodeToExtract].thumbHeight) : (""));
+            episode.imdbId = this.data[episodeToExtract].imdbId;
             //episode.siteRating = this.data[0].siteRating;
             //episode.siteRatingCount = this.data[0].siteRatingCount;
 

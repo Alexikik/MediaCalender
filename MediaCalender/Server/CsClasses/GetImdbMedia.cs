@@ -140,8 +140,8 @@ namespace MediaCalender.Server.CsClasses
             {
                 // Url to TVDB
                 //Uri url = new Uri("https://api.thetvdb.com/episodes/75897");
-                Uri url = new Uri("https://api.thetvdb.com/series/75897/episodes/query?airedSeason=23&airedEpisode=6");     // South Park
-                //Uri url = new Uri("https://api.thetvdb.com/series/75978/episodes/query?airedSeason=18&airedEpisode=6");   // Family Guy
+                //Uri url = new Uri("https://api.thetvdb.com/series/75897/episodes/query?airedSeason=23&airedEpisode=5");     // South Park
+                Uri url = new Uri("https://api.thetvdb.com/series/75978/episodes/query?airedSeason=18");   // Family Guy
 
                 // Set Accept request header
                 client.DefaultRequestHeaders.Add("Accept", "application/json");
@@ -161,9 +161,47 @@ namespace MediaCalender.Server.CsClasses
                 // Deserialize string into token
                 RarEpisode rarEpisode = new RarEpisode();
                 rarEpisode = JsonConvert.DeserializeObject<RarEpisode>(respString);
-                Episode episode = rarEpisode.convertToEpisode();
+                Episode episode = rarEpisode.convertToEpisode(0);
 
                 return episode;
+            }
+        }
+        public async Task<List<Episode>> getEpisodeList(string EpisodeName)
+        {
+            List<Episode> episodeList = new List<Episode>();
+            
+            using (HttpClient client = new HttpClient())
+            {
+                // Url to TVDB
+                //Uri url = new Uri("https://api.thetvdb.com/episodes/75897");
+                //Uri url = new Uri("https://api.thetvdb.com/series/75897/episodes/query?airedSeason=23&airedEpisode=5");     // South Park
+                Uri url = new Uri("https://api.thetvdb.com/series/75978/episodes/query?airedSeason=18");   // Family Guy
+
+                // Set Accept request header
+                client.DefaultRequestHeaders.Add("Accept", "application/json");
+                client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", Token.token);
+
+                // Setup request message with json apikey and content-type header
+                HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Get, url);
+
+                // Send via post, get response, read content into string, check to be sure it was OK
+                HttpResponseMessage resp = await client.SendAsync(request);
+                var respString = await resp.Content.ReadAsStringAsync();
+                if (resp.ReasonPhrase != "OK")
+                {
+                    throw new Exception(resp.ReasonPhrase);
+                }
+
+                // Deserialize string into token
+                RarEpisode rarEpisode = new RarEpisode();
+                rarEpisode = JsonConvert.DeserializeObject<RarEpisode>(respString);
+
+                for (int i = 0; i < rarEpisode.data.Count; i++)
+                {
+                    episodeList.Add(rarEpisode.convertToEpisode(i));
+                }
+
+                return episodeList;
             }
         }
 

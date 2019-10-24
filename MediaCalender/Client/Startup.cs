@@ -7,7 +7,7 @@ namespace MediaCalender.Client
     {
         public void ConfigureServices(IServiceCollection services)
         {
-
+            //System.ComponentModel.ReferenceConverter;
         }
 
         public void Configure(IComponentsApplicationBuilder app)

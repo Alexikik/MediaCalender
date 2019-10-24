@@ -90,9 +90,10 @@ namespace MediaCalender.Server.CsClasses
             movie = new Movie();
             GetImdbSeries getter = new GetImdbSeries();
             //Task<Episode> TEpisode = await getter.getSeries("hd");
-            Episode episode = await getter.getEpisode("hd");
+            //Episode episode = await getter.getEpisode("hd");
+            var episode = await getter.getEpisodeList("hd");
             ////Episode episode = TEpisode.Result;
-            AddEpisodeToDatabase(episode);
+            //AddEpisodeToDatabase(episode);            // temp
             //getter.SetToken();
 
             if (movie.Response == "True")
@@ -175,7 +176,7 @@ namespace MediaCalender.Server.CsClasses
 
         public void AddEpisodeToDatabase(Episode episode)
         {
-            string sql = $"Insert into episodeLibary (Id, AiredSeason, AiredSeasonId, AiredSeasonNumber, EpisodeName, FirstAired, GuestStars, Director, Directors, Writers, Overview, ProductionCode, ShowUrl, LastUpdated, AbsoluteNumber, Filename, SeriesId, LastUpdatedBy, ThumbAdded, ThumbWidth, ThumbHeight, ImdbId, SiteRating, SiteRatingCount)" +
+            string sql = $"Insert into episodeLibary (Id, AiredSeason, AiredSeasonId, AiredEpisodeNumber, EpisodeName, FirstAired, GuestStars, Director, Directors, Writers, Overview, ProductionCode, ShowUrl, LastUpdated, AbsoluteNumber, Filename, SeriesId, LastUpdatedBy, ThumbAdded, ThumbWidth, ThumbHeight, ImdbId, SiteRating, SiteRatingCount)" +
                 $" values ('{episode.id}', '{episode.airedSeason}', '{episode.airedSeasonID}'" +
                 $", '{episode.airedEpisodeNumber}', '{episode.episodeName.Replace("'", "´")}'" +
                 $", '{episode.firstAired.Replace("'", "´")}', '{episode.guestStars.Replace("'", "´")}'" +
@@ -188,6 +189,30 @@ namespace MediaCalender.Server.CsClasses
                 $", '{episode.imdbId.Replace("'", "´")}', '{episode.siteRating}', '{episode.siteRatingCount}')";
 
             SQLiteDataReader reader = GetSqlReader(sql);
+        }
+
+        public async Task<List<Episode>> GetAllEpisodes()
+        {
+            List<Episode> episodeList = new List<Episode>();
+
+            string sql = "SELECT * FROM EpisodeLibary";
+            SQLiteDataReader reader = GetSqlReader(sql);
+
+            // MANY attributes are missing, also inbetween the already added ! ! !
+            while (reader.Read())
+            {
+                Episode episode = new Episode();
+                episode.id = Convert.ToInt32(reader["Id"]);
+                episode.airedSeason = Convert.ToInt32(reader["AiredSeason"]);
+                episode.airedEpisodeNumber = Convert.ToInt32(reader["AiredEpisodeNumber"]);
+                episode.episodeName = reader["EpisodeName"].ToString();
+                episode.firstAired = reader["FirstAired"].ToString();
+                episode.overview = reader["Overview"].ToString();
+
+                episodeList.Add(episode);
+            }
+
+            return episodeList;
         }
     }
 }
