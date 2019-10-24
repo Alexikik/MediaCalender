@@ -7,11 +7,11 @@
 
 <p>Please login below:</p>
 
-<div>
+<div tabindex="0">
     Username: <input type="text" id="username" name="username" @bind="uname" /><br>
 </div>
-<div>
-    Password: <input type="text" style="margin-left:4px" id="password" name="password" @bind="pword" /><br>
+<div tabindex="1">
+    Password: <input type="text" style="margin-left:4px" id="password" name="password" @bind="pword"/><br>
 </div>
 
 <button class="btn btn-primary" @onclick="Login">Login</button>

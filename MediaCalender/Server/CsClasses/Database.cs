@@ -107,6 +107,28 @@ namespace MediaCalender.Server.CsClasses
             return new BoolContainer() { result = result };
         }
 
+        public async Task<BoolContainer> AddSeason(int seriesId)
+        {
+            List<Episode> episodes;
+            BoolContainer result;
+
+            GetImdbSeries getter = new GetImdbSeries();
+            var episode = await getter.getEpisodeList("hd");
+            ////Episode episode = TEpisode.Result;
+            //AddEpisodeToDatabase(episode);            // temp
+            //getter.SetToken();
+
+            //if (movie.Response == "True")
+            //{
+            //    AddMovieToDatabase(movie);
+            //    result = true;
+            //}
+            //else
+            //    result = false;
+
+            return new BoolContainer();
+        }
+
         public async Task<ResultContainer> AddFolSeries(string seriesName)
         {
             Series series;
