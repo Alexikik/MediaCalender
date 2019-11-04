@@ -8,6 +8,7 @@ namespace MediaCalender.Shared.ContentTypes
     {
         #region info
         public int id { get; set; }
+        public string SeriesName { get; set; }
         public int airedSeason { get; set; }
         public int airedSeasonID { get; set; }
         public int airedEpisodeNumber { get; set; }
@@ -46,7 +47,7 @@ namespace MediaCalender.Shared.ContentTypes
 
         public Episode() : base()
         {
-            overview = "";
+
         }
     }
 

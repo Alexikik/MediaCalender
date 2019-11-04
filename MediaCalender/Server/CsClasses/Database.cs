@@ -107,26 +107,28 @@ namespace MediaCalender.Server.CsClasses
             return new BoolContainer() { result = result };
         }
 
-        public async Task<BoolContainer> AddSeason(int seriesId)
+        public async Task<ResultContainer> AddSeason(Series series)
         {
             List<Episode> episodes;
-            BoolContainer result;
+            ResultContainer result = new ResultContainer();
 
             GetImdbSeries getter = new GetImdbSeries();
-            var episode = await getter.getEpisodeList("hd");
-            ////Episode episode = TEpisode.Result;
-            //AddEpisodeToDatabase(episode);            // temp
-            //getter.SetToken();
+            episodes = await getter.getEpisodeList("hd");
 
-            //if (movie.Response == "True")
-            //{
-            //    AddMovieToDatabase(movie);
-            //    result = true;
-            //}
-            //else
-            //    result = false;
+            if (episodes.Count == 0)
+            {
+                result.result = false;
+                result.errorMessage = "No episodes found [Database.cs]";
+                return result;
+            }
 
-            return new BoolContainer();
+            foreach (Episode episode in episodes)
+            {
+                AddEpisodeToDatabase(episode);
+            }
+
+            result.result = true;
+            return result;
         }
 
         public async Task<ResultContainer> AddFolSeries(string seriesName)
@@ -145,7 +147,6 @@ namespace MediaCalender.Server.CsClasses
                 return result;
             }
 
-
             // Gets info about series
             series = await getter.GetSeries(seriesId);
 
@@ -153,6 +154,8 @@ namespace MediaCalender.Server.CsClasses
             {
                 // Adds series to database
                 AddSeriesToDatabase(series);
+                // Adds the season to the database
+                await AddSeason(series);
                 result.result = true;
             }
             else

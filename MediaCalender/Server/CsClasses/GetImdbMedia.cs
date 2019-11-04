@@ -176,6 +176,7 @@ namespace MediaCalender.Server.CsClasses
                 //Uri url = new Uri("https://api.thetvdb.com/episodes/75897");
                 //Uri url = new Uri("https://api.thetvdb.com/series/75897/episodes/query?airedSeason=23&airedEpisode=5");     // South Park
                 Uri url = new Uri("https://api.thetvdb.com/series/75978/episodes/query?airedSeason=18");   // Family Guy
+                //Uri url = new Uri("https://api.thetvdb.com/series/276562/episodes/query?airedSeason=6");   // Power
 
                 // Set Accept request header
                 client.DefaultRequestHeaders.Add("Accept", "application/json");
