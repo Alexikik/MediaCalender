@@ -11,7 +11,7 @@ namespace MediaCalender.Server
         public static CsClasses.CsClasses Classes;
         public static void Main(string[] args)
         {
-            EnsureDbCreated(false);
+            EnsureDbCreated(true);
             //Classes = new CsClasses.CsClasses();
 
             BuildWebHost(args).Run();
@@ -33,6 +33,9 @@ namespace MediaCalender.Server
                     ctx.Database.EnsureDeleted();
                 ctx.Database.EnsureCreated();
                 //ctx.Database.Migrate();
+
+                ctx.Add(new MediaCalender.Shared.User() { Username = ".", Password = "." });
+                ctx.SaveChanges();
             }
         }
 

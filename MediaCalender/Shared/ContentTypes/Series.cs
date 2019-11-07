@@ -34,6 +34,7 @@ namespace MediaCalender.Shared.ContentTypes
         public double siteRating { get; set; }
         public int siteRatingCount { get; set; }
         public string slug { get; set; }
+        public ICollection<Episode> episodes { get; set; } = new List<Episode>();
         #endregion info
     }
 }

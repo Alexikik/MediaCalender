@@ -6,7 +6,7 @@ namespace MediaCalender.Shared.ContentTypes
 {
     public class RarEpisode
     {
-        //public Links links { get; set; }
+        public Links links { get; set; }
         public List<RarEpisodeData> data { get; set; }
 
         public Episode convertToEpisode(int episodeToExtract)
@@ -79,13 +79,13 @@ namespace MediaCalender.Shared.ContentTypes
             return episode;
         }
     }
-    //public class Links
-    //{
-    //    public int first { get; set; }
-    //    public int last { get; set; }
-    //    public object next { get; set; }
-    //    public object prev { get; set; }
-    //}
+    public class Links
+    {
+        public int first { get; set; }
+        public int last { get; set; }
+        public object next { get; set; }
+        public object prev { get; set; }
+    }
 
     //public class Language
     //{
@@ -128,7 +128,7 @@ namespace MediaCalender.Shared.ContentTypes
         public string thumbWidth { get; set; }
         public string thumbHeight { get; set; }
         public string imdbId { get; set; }
-        public int siteRating { get; set; }
+        public double siteRating { get; set; }
         public int siteRatingCount { get; set; }
     }
 }

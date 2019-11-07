@@ -32,6 +32,7 @@ namespace MediaCalender.Server
         {
             services.AddMvc().AddNewtonsoftJson();
             services.AddSingleton<LoginSystem>();
+            services.AddScoped<SeriesLibary>();
             services.AddDbContext<Database>(options =>
             {
                 //options.UseSqlite(Configuration.GetConnectionString("DatabaseFile"));

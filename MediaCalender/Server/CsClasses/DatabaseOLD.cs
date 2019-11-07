@@ -91,7 +91,7 @@ namespace MediaCalender.Server.CsClasses
             GetImdbSeries getter = new GetImdbSeries();
             //Task<Episode> TEpisode = await getter.getSeries("hd");
             //Episode episode = await getter.getEpisode("hd");
-            var episode = await getter.getEpisodeList("hd");
+            var episode = await getter.getEpisodeList(2);
             ////Episode episode = TEpisode.Result;
             //AddEpisodeToDatabase(episode);            // temp
             //getter.SetToken();
@@ -113,7 +113,7 @@ namespace MediaCalender.Server.CsClasses
             ResultContainer result = new ResultContainer();
 
             GetImdbSeries getter = new GetImdbSeries();
-            episodes = await getter.getEpisodeList("hd");
+            episodes = await getter.getEpisodeList(2);
 
             if (episodes.Count == 0)
             {

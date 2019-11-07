@@ -42,7 +42,7 @@ namespace MediaCalender.Shared.ContentTypes
         public string thumbWidth { get; set; }
         public string thumbHeight { get; set; }
         public string imdbId { get; set; }
-        public int siteRating { get; set; }
+        public double siteRating { get; set; }
         public int siteRatingCount { get; set; }
         #endregion info
     }

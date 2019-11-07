@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using MediaCalender.Shared.Containers;
 using MediaCalender.Shared.ContentTypes;
+using MediaCalender.Server.CsClasses;
 
 namespace MediaCalender.Server.Controllers
 {
@@ -13,6 +14,36 @@ namespace MediaCalender.Server.Controllers
     [Route("[controller]")]
     public class CalendarController : ControllerBase
     {
+        Database database;
+        SeriesLibary seriesLibary;
+        public CalendarController(Database database, SeriesLibary seriesLibary)
+        {
+            this.database = database;
+            this.seriesLibary = seriesLibary;
+        }
+
+        [HttpPost("[action]")]
+        public async Task<ResultContainer> AddFolSeries([FromBody]StringContainer stringContainer)
+        {
+            ResultContainer result;
+            result = await seriesLibary.AddSeries(stringContainer.str, database);
+
+            return result;
+        }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         // Gets a string with some info on a specific movie (TEST)
         [HttpGet("[action]")]
         public StringContainer GetSpecificMovieInfo()
@@ -31,14 +62,9 @@ namespace MediaCalender.Server.Controllers
             return answer;
         }
 
-        [HttpPost("[action]")]
-        public async Task<ResultContainer> AddFolSeries([FromBody]StringContainer stringContainer)
-        {
-            ResultContainer result;
-            result = await Program.Classes.database.AddFolSeries(stringContainer.str);
-
-            return result;
-        }
+        
+        
+        
 
         [HttpPost("[action]")]
         public async Task<List<Episode>> GetAllEpisodes([FromBody]StringContainer stringContainer)
@@ -50,3 +76,14 @@ namespace MediaCalender.Server.Controllers
         }
     }
 }
+
+
+
+//[HttpPost("[action]")]
+//public async Task<ResultContainer> AddFolSeries([FromBody]StringContainer stringContainer)
+//{
+//    ResultContainer result;
+//    result = await Program.Classes.database.AddFolSeries(stringContainer.str);
+
+//    return result;
+//}

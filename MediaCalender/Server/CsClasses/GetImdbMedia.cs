@@ -94,7 +94,7 @@ namespace MediaCalender.Server.CsClasses
     public class GetImdbSeries
     {
         // {"apikey":"43UZATVN8H64OAW8","username":"Alexik1998miu","userkey":"OOA6Z0AKHTI3BPS8"}
-        // eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE1NzE0MzQ2MzgsImlkIjoiTWVkQ2FsIiwib3JpZ19pYXQiOjE1NzEzNDgyMzgsInVzZXJpZCI6NTQwNjMyLCJ1c2VybmFtZSI6IkFsZXhpazE5OThtaXUifQ.R5HDGh7ePbF9uEZtcGU0_UTpUzL2Jh0MWx5rmVQEQJcr708tqavduiL7ObU46A7dOtTwVG0E_fR902sAYg7Viq1LhCMNWlheKKC0258k9c3vbm2zOb8Z1HdlddQ61r1JfWM7Yr-RzMFLYVoXpgjFGOOm9ekBfFSgwinWLesOSmTlfT9xTxZbnny9RI1EfmpQUhR6qe2hl5OCXPBdzDa130uO4S6z-lz2L44dq57Tq5BAR8lip_eSnSGCNvWS4XmW52tcDqazZq-lN-WWO-rvs-4loiDokM4V_AK_3fK0lWMTTOXsP-ZjgFWx4E-cZiskNq0wxPbUvgdmSHrWCo7Jpw
+        // eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE1NzMyNTE2MjQsImlkIjoiTWVkQ2FsIiwib3JpZ19pYXQiOjE1NzMxNjUyMjQsInVzZXJpZCI6NTQwNjMyLCJ1c2VybmFtZSI6IkFsZXhpazE5OThtaXUifQ.WlRIQRWS9mNFQad0IroquOSxyye5HCsBtdnpVp97-sWBBbAjDiClDIr7aKXISrG4TGvYwMDwwxoLTnEjtnsRqtQR7JOq3rt_fQcYfL-qG3meeR6PB5By3N0KsmWV0CX4WOhAAvXoPi6BoUtYd9Ca6O5hNltKPGx-xJTBAyk1X__Ok2uF5q1Y7B8IQkmALD8-808jBoXcxaH-z8K9eLoRlbg1-XClgfgoiR0LhhZnOIYpBw5mI_txbnPKqrfJE5dBjznBsZaE0NW43JKThVL-raJI4VS5_gKuZ-RKbj2549A646zMe-77LiH_fjgqOs89JFNPACCzWXJscymGAmy2Ew
         Token Token { get; }
         readonly string ApiKey = "43UZATVN8H64OAW8";
 
@@ -166,41 +166,54 @@ namespace MediaCalender.Server.CsClasses
                 return episode;
             }
         }
-        public async Task<List<Episode>> getEpisodeList(string EpisodeName)
+        public async Task<List<Episode>> getEpisodeList(int seriesId)
         {
             List<Episode> episodeList = new List<Episode>();
+            long nextPage = 1;
             
             using (HttpClient client = new HttpClient())
             {
-                // Url to TVDB
-                //Uri url = new Uri("https://api.thetvdb.com/episodes/75897");
-                //Uri url = new Uri("https://api.thetvdb.com/series/75897/episodes/query?airedSeason=23&airedEpisode=5");     // South Park
-                Uri url = new Uri("https://api.thetvdb.com/series/75978/episodes/query?airedSeason=18");   // Family Guy
-                //Uri url = new Uri("https://api.thetvdb.com/series/276562/episodes/query?airedSeason=6");   // Power
-
-                // Set Accept request header
-                client.DefaultRequestHeaders.Add("Accept", "application/json");
-                client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", Token.token);
-
-                // Setup request message with json apikey and content-type header
-                HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Get, url);
-
-                // Send via post, get response, read content into string, check to be sure it was OK
-                HttpResponseMessage resp = await client.SendAsync(request);
-                var respString = await resp.Content.ReadAsStringAsync();
-                if (resp.ReasonPhrase != "OK")
+                do
                 {
-                    throw new Exception(resp.ReasonPhrase);
-                }
+                    // Url to TVDB
+                    //Uri url = new Uri("https://api.thetvdb.com/episodes/75897");
+                    //Uri url = new Uri("https://api.thetvdb.com/series/75897/episodes/query?airedSeason=23&airedEpisode=5");     // South Park
+                    //Uri url = new Uri("https://api.thetvdb.com/series/seriesId/episodes/query?airedSeason=18");   // Family Guy
+                    //Uri url = new Uri("https://api.thetvdb.com/series/75897/episodes/query?airedSeason=23");   // South Park S23
+                    //Uri url = new Uri("https://api.thetvdb.com/series/276562/episodes/query?airedSeason=6");   // Power
+                    Uri url = new Uri($"https://api.thetvdb.com/series/{seriesId}/episodes?page={nextPage}");   // 100 episoder
 
-                // Deserialize string into token
-                RarEpisode rarEpisode = new RarEpisode();
-                rarEpisode = JsonConvert.DeserializeObject<RarEpisode>(respString);
+                    // Set Accept request header
+                    client.DefaultRequestHeaders.Add("Accept", "application/json");
+                    client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", Token.token);
 
-                for (int i = 0; i < rarEpisode.data.Count; i++)
-                {
-                    episodeList.Add(rarEpisode.convertToEpisode(i));
-                }
+                    // Setup request message with json apikey and content-type header
+                    HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Get, url);
+
+                    // Send via post, get response, read content into string, check to be sure it was OK
+                    HttpResponseMessage resp = await client.SendAsync(request);
+                    var respString = await resp.Content.ReadAsStringAsync();
+                    if (resp.ReasonPhrase != "OK")
+                    {
+                        throw new Exception(resp.ReasonPhrase);
+                    }
+
+                    // Deserialize string into token
+                    RarEpisode rarEpisode = new RarEpisode();
+                    rarEpisode = JsonConvert.DeserializeObject<RarEpisode>(respString);
+
+                    for (int i = 0; i < rarEpisode.data.Count; i++)
+                    {
+                        episodeList.Add(rarEpisode.convertToEpisode(i));
+                    }
+
+                    // Sets nextPage int to check if there are more pages with more episodes
+                    if (rarEpisode.links.next != null)
+                        nextPage = (long)rarEpisode.links.next;
+                    else
+                        nextPage = 0;
+                } while (nextPage != 0);
+                
 
                 return episodeList;
             }
