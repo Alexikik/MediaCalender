@@ -7,13 +7,13 @@ namespace MediaCalender.Server.CsClasses
 {
     public class CsClasses
     {
-        public Database database { get; set; }
+        public DatabaseOLD database { get; set; }
         public Account account { get; set; }
         public bool loginStatus { get; set; }
 
         public CsClasses()
         {
-            database = new Database();
+            database = new DatabaseOLD();
             account = new Account(database);
             loginStatus = false;
         }

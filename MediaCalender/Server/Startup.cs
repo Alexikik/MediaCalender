@@ -5,16 +5,38 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Newtonsoft.Json.Serialization;
 using System.Linq;
+using MediaCalender.Server.CsClasses;
+using System.Data.SQLite;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Sqlite;
+using Microsoft.Extensions.Configuration;
+using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.HttpsPolicy;
 
 namespace MediaCalender.Server
 {
     public class Startup
     {
+        public Startup(IConfiguration configuration)
+        {
+            Configuration = configuration;
+        }
+        public IConfiguration Configuration { get; }
+
+
         // This method gets called by the runtime. Use this method to add services to the container.
         // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddMvc().AddNewtonsoftJson();
+            services.AddSingleton<LoginSystem>();
+            services.AddDbContext<Database>(options =>
+            {
+                //options.UseSqlite(Configuration.GetConnectionString("DatabaseFile"));
+                options.UseSqlite("Data Source=DatabaseFile.sqlite");
+            });
             services.AddResponseCompression(opts =>
             {
                 opts.MimeTypes = ResponseCompressionDefaults.MimeTypes.Concat(

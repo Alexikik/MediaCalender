@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
+using MediaCalender.Server.CsClasses;
+
 
 namespace MediaCalender.Server
 {
@@ -9,7 +11,9 @@ namespace MediaCalender.Server
         public static CsClasses.CsClasses Classes;
         public static void Main(string[] args)
         {
-            Classes = new CsClasses.CsClasses();
+            EnsureDbCreated(false);
+            //Classes = new CsClasses.CsClasses();
+
             BuildWebHost(args).Run();
         }
 
@@ -20,5 +24,19 @@ namespace MediaCalender.Server
                     .Build())
                 .UseStartup<Startup>()
                 .Build();
+
+        private static void EnsureDbCreated(bool reset = false)
+        {
+            using (Database ctx = new Database())
+            {
+                if (reset)
+                    ctx.Database.EnsureDeleted();
+                ctx.Database.EnsureCreated();
+                //ctx.Database.Migrate();
+            }
+        }
+
     }
+
+    
 }

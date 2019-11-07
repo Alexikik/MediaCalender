@@ -4,7 +4,7 @@ using System.Text;
 
 namespace MediaCalender.Shared.ContentTypes
 {
-    public class Movie : MediaContent
+    public class Movie
     {
         public int Key { get; set; }
         public string Title { get; set; }
@@ -27,9 +27,6 @@ namespace MediaCalender.Shared.ContentTypes
         public string imdbID { get; set; }
         public string Type { get; set; }
         public string Response { get; set; }    // Not in database (Only used for initial download)
-
-        public Movie() : base()
-        { }
 
 
         public override string ToString()

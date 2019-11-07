@@ -11,9 +11,9 @@ namespace MediaCalender.Server.CsClasses
     {
         public string name { get; set; }
         public bool loginStatus { get; set; }
-        Database database { get; set; }
+        DatabaseOLD database { get; set; }
 
-        public Account(Database database)
+        public Account(DatabaseOLD database)
         {
             this.database = database;
         }

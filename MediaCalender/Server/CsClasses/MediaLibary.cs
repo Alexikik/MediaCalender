@@ -7,9 +7,9 @@ namespace MediaCalender.Server.CsClasses
 {
     public class MediaLibary
     {
-        public Database database { get; set; }
+        public DatabaseOLD database { get; set; }
 
-        public MediaLibary(Database database)
+        public MediaLibary(DatabaseOLD database)
         {
             this.database = database;
         }

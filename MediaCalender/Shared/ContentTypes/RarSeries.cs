@@ -12,8 +12,6 @@ namespace MediaCalender.Shared.ContentTypes
         {
             Series series = new Series();
             string temp;
-            int intTemp;
-            bool result;
 
             series.id = this.data.id;
             series.seriesName = this.data.seriesName;
@@ -32,7 +30,7 @@ namespace MediaCalender.Shared.ContentTypes
             series.banner = this.data.banner;
             series.seriesId = this.data.seriesId;
             series.status = this.data.status;
-            series.firstAired = this.data.firstAired;
+            series.firstAired = DateTime.Parse(this.data.firstAired);
             series.network = this.data.network;
             series.networkId = this.data.networkId;
             series.runtime = this.data.runtime;

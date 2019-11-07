@@ -24,17 +24,13 @@
 
     public async Task Login()
     {
-        // Sends login credentials
+        bool loginSuccessfulness;
+        // Sends login credentials and recieves answar upon if it was succesful
         LoginCredentials loginCredentials = new LoginCredentials(uname, pword);
-        await Http.PostJsonAsync("Login/PostLogin", loginCredentials);
-
-        // Recieves answer from server if login was succesful
-        BoolContainer result = await Http.GetJsonAsync<BoolContainer>("Login/SendLoginAnswer");
-        Program.Classes.LoginStatus = result.result;
+        loginSuccessfulness = await Http.PostJsonAsync<bool>("Login/PostLogin", loginCredentials);
 
         // Process depending on result
-        //RefreshNavbar refreshNavbar = new RefreshNavbar();
-        if (result.result)
+        if (loginSuccessfulness)
         {
             //refreshNavbar.CallRequestRefresh();
             navigationManager.NavigateTo("Calender");   // Navigates to Calender view

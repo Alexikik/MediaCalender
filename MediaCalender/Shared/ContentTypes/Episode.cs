@@ -4,9 +4,10 @@ using System.Text;
 
 namespace MediaCalender.Shared.ContentTypes
 {
-    public class Episode : MediaContent
+    public class Episode
     {
         #region info
+        public int Key { get; set; }
         public int id { get; set; }
         public string SeriesName { get; set; }
         public int airedSeason { get; set; }
@@ -44,11 +45,6 @@ namespace MediaCalender.Shared.ContentTypes
         public int siteRating { get; set; }
         public int siteRatingCount { get; set; }
         #endregion info
-
-        public Episode() : base()
-        {
-
-        }
     }
 
     

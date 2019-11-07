@@ -7,27 +7,37 @@ using Microsoft.AspNetCore.Mvc;
 using MediaCalender.Shared.Containers;
 using MediaCalender.Server.CsClasses;
 
+
 namespace MediaCalender.Server.Controllers
 {
     [ApiController]
     [Route("[controller]")]
     public class LoginController : ControllerBase
     {
+        public Database database;
+        public LoginSystem loginSystem;
+        public LoginController(Database database, LoginSystem loginSystem)
+        {
+            this.database = database;
+            this.loginSystem = loginSystem;
+        }
         
         #region LoginSystem
         [HttpPost("[action]")]
-        public void PostLogin([FromBody]LoginCredentials info)
+        public bool PostLogin([FromBody]LoginCredentials loginCredentials)
         {
-            LoginCredentials loginCredentials = info;
-            Program.Classes.account.Login(loginCredentials);
+            bool result;
+
+            result = loginSystem.Login(loginCredentials, database);
+            return result;
         }
 
-        [HttpGet("[action]")]
-        public BoolContainer SendLoginAnswer()
-        {
-            BoolContainer answer = new BoolContainer() { result = Program.Classes.account.loginStatus };
-            return answer;
-        }
+        //[HttpGet("[action]")]
+        //public BoolContainer SendLoginAnswer()
+        //{
+        //    BoolContainer answer = new BoolContainer() { result = Program.Classes.account.loginStatus };
+        //    return answer;
+        //}
         #endregion LoginSystem
 
 
