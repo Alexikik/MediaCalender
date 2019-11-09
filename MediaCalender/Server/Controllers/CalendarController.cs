@@ -16,10 +16,12 @@ namespace MediaCalender.Server.Controllers
     {
         Database database;
         SeriesLibary seriesLibary;
-        public CalendarController(Database database, SeriesLibary seriesLibary)
+        MovieLibary movieLibary;
+        public CalendarController(Database database, SeriesLibary seriesLibary, MovieLibary movieLibary)
         {
             this.database = database;
             this.seriesLibary = seriesLibary;
+            this.movieLibary = movieLibary;
         }
 
         [HttpPost("[action]")]
@@ -31,6 +33,35 @@ namespace MediaCalender.Server.Controllers
             return result;
         }
 
+        // Adds a specific movie by name and returns a bool indicating if the process was succesful
+        [HttpPost("[action]")]
+        public ResultContainer AddMovie([FromBody]StringContainer stringContainer)
+        {
+            ResultContainer result;
+            result = movieLibary.AddMovie(stringContainer.str);
+
+            return result;
+        }
+
+        // Returns all episodes from the db
+        [HttpPost("[action]")]
+        public List<Episode> GetAllEpisodes()
+        {
+            List<Episode> episodeList = new List<Episode>();
+            episodeList = database.EpisodeLibary.ToList();
+            //episodeList = database.EpisodeLibary.Where(s => s.Key < 25).ToList();
+            //episodeList.Add(database.EpisodeLibary.Where(s => s.Key == 167).First());
+
+            foreach (Episode episode in episodeList)
+            {
+                if (episode.firstAired == "")
+                {
+                    episode.firstAired = DateTime.Now.ToString();
+                }
+            }
+
+            return episodeList;
+        }
 
 
 
@@ -52,28 +83,12 @@ namespace MediaCalender.Server.Controllers
             return answer;
         }
 
-        // Adds a specific movie by name and returns a bool indicating if the process was succesful
-        [HttpPost("[action]")]
-        public async Task<BoolContainer> PostMovieString([FromBody]StringContainer stringContainer)
-        {
-            BoolContainer answer;
-            answer = await Program.Classes.database.AddMovieAsync(stringContainer.str);
-
-            return answer;
-        }
 
         
         
         
 
-        [HttpPost("[action]")]
-        public async Task<List<Episode>> GetAllEpisodes([FromBody]StringContainer stringContainer)
-        {
-            List<Episode> episodeList;
-            episodeList = await Program.Classes.database.GetAllEpisodes();
-
-            return episodeList;
-        }
+        
     }
 }
 

@@ -30,7 +30,17 @@ namespace MediaCalender.Shared.ContentTypes
             series.banner = this.data.banner;
             series.seriesId = this.data.seriesId;
             series.status = this.data.status;
-            series.firstAired = DateTime.Parse(this.data.firstAired);
+
+            DateTime tempDateTime = new DateTime();
+            if (DateTime.TryParse(this.data.firstAired, out tempDateTime))
+            {
+                series.firstAired = tempDateTime;
+            }
+            else
+            {
+                series.firstAired = DateTime.Now; 
+            }
+            //series.firstAired = DateTime.Parse(this.data.firstAired);
             series.network = this.data.network;
             series.networkId = this.data.networkId;
             series.runtime = this.data.runtime;

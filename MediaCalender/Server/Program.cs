@@ -11,7 +11,7 @@ namespace MediaCalender.Server
         public static CsClasses.CsClasses Classes;
         public static void Main(string[] args)
         {
-            EnsureDbCreated(true);
+            EnsureDbCreated(false);
             //Classes = new CsClasses.CsClasses();
 
             BuildWebHost(args).Run();
@@ -34,7 +34,14 @@ namespace MediaCalender.Server
                 ctx.Database.EnsureCreated();
                 //ctx.Database.Migrate();
 
+
+                //MediaCalender.Shared.ContentTypes.Series seriesTest = new MediaCalender.Shared.ContentTypes.Series() { seriesId = "75", seriesName = "test" };
+                //MediaCalender.Shared.ContentTypes.Episode episodeTest = new MediaCalender.Shared.ContentTypes.Episode() { seriesId = 75, SeriesName = "test" };
+                //seriesTest.episodes.Add(episodeTest);
+
                 ctx.Add(new MediaCalender.Shared.User() { Username = ".", Password = "." });
+                //ctx.Add(seriesTest);
+                //ctx.Add(episodeTest);
                 ctx.SaveChanges();
             }
         }

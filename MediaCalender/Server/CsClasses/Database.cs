@@ -30,12 +30,13 @@ namespace MediaCalender.Server.CsClasses
             modelBuilder.ApplyConfiguration(new UserConfiguration());
             modelBuilder.ApplyConfiguration(new SeriesConfiguration());
             modelBuilder.ApplyConfiguration(new EpisodeConfiguration());
+            modelBuilder.ApplyConfiguration(new MovieConfiguration());
         }
 
         public DbSet<User> Users { get; set; }
         public DbSet<Series> SeriesLibary { get; set; }
         public DbSet<Episode> EpisodeLibary { get; set; }
-        //public DbSet<Movie> MovieLibary { get; set; }
-        
+        public DbSet<Movie> MovieLibary { get; set; }
+
     }
 }

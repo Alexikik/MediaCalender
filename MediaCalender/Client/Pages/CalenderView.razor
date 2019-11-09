@@ -4,77 +4,96 @@
 @using System.ComponentModel
 @using Syncfusion.EJ2.Blazor
 @using Syncfusion.EJ2.Blazor.Schedule
+@using Syncfusion.EJ2.Blazor.SplitButtons
 @inject HttpClient Http
 
 <h1>Media Calender!</h1>
 
-@*@if (movieString == null)
+@if (loaded == false)
 {
     <p><em>Loading...</em></p>
 }
 else
-{*@
+{
     @*Movie string to test connection, *@
     @*<p>@movieString.str</p>*@
 
     <div>
         Movie name: <input type="text" style="margin-left:4px" id="movieName" name="movieName" @bind="movieName" /><br>
     </div>
-    <div>
-        Series name: <input type="text" style="margin-left:2px" id="seriesName" name="seriesName" @bind="seriesName" /><br>
-    </div>
 
     <button class="btn btn-primary" @onclick="AddMovie">Add movie</button>
     @*<button class="btn btn-primary" @onclick="GetAllEpisodes">Add movie</button>*@
     <p>@((MarkupString)addMovieResultString)</p>
 
+    <div>
+        Series name: <input type="text" style="margin-left:2px" id="seriesName" name="seriesName" @bind="seriesName" /><br>
+    </div>
+
     <button class="btn btn-primary" @onclick="AddSeries">Add series</button>
     <p>@((MarkupString)addSeriesResultString)</p>
     @*<p style="white-space: pre-line">@addMovieResultString</p>*@
 
+    <p>Number: @EpNum</p>
+    @*<div>
+            Amount of episodes: <input type="text" style="margin-left:2px" id="EpNum" name="EpNum" @bind="EpNum" /><br>
+        </div>*@
+    //Height="650px" Width="700px"
 
-    <EjsSchedule TValue="AppointmentData" Height="650px" Width="700px" CurrentView="View.Month" FirstDayOfWeek=1>
+    <EjsSchedule TValue="AppointmentData"
+                 Height=700px
+                 Width="auto"
+                 CurrentView="View.Month"
+                 FirstDayOfWeek=1
+                 RowAutoHeight="true">
         <ScheduleEventSettings DataSource="@DataSource"></ScheduleEventSettings>
     </EjsSchedule>
 
+    <EjsProgressButton EnableProgress="true" Content="Progress Step" CssClass="e-hide-spinner">
+        <ProgressButtonEvents OnBegin="@begin"></ProgressButtonEvents>
+    </EjsProgressButton>
 
-@*  }*@
+
+}
 
 @code {
     StringContainer movieString;
-    string movieName, seriesName, addMovieResultString, addSeriesResultString;
+    string movieName, seriesName, addMovieResultString, addSeriesResultString, EpNum;
+    bool loaded = false;
     #region Calendar things
     // Needed because of bug in Blazor https://github.com/Joelius300/ChartJSBlazor/issues/93
     private ReferenceConverter ReferenceConverter = new ReferenceConverter(typeof(EjsSchedule<object>));
 
-
+    private void begin(Syncfusion.EJ2.Blazor.SplitButtons.ProgressEventArgs args)
+    {
+        args.Step = 2;
+    }
     List<AppointmentData> DataSource = new List<AppointmentData>()
     {
-        new AppointmentData { Id = 1, Subject = "Paris", StartTime = new DateTime(2018, 2, 13, 10, 0, 0) , EndTime = new DateTime(2018, 2, 13, 12, 0, 0) },
-        new AppointmentData { Id = 1, Subject = "Germany", StartTime = new DateTime(2018, 2, 15, 10, 0, 0) , EndTime = new DateTime(2018, 2, 15, 12, 0, 0) }
+        //new AppointmentData { Id = 1, Subject = "Paris", StartTime = new DateTime(2018, 2, 13, 10, 0, 0) , EndTime = new DateTime(2018, 2, 13, 12, 0, 0) },
+        //new AppointmentData { Id = 1, Subject = "Germany", StartTime = new DateTime(2018, 2, 15, 10, 0, 0) , EndTime = new DateTime(2018, 2, 15, 12, 0, 0) }
     };
 
     #endregion Calendar things
 
     protected override async Task OnInitializedAsync()
     {
-        //movieString = await Http.GetJsonAsync<StringContainer>("Calendar/GetSpecificMovieInfo");
-        //await GetAllEpisodes();
+        await GetAllEpisodes();
     }
 
     public async Task AddMovie()
     {
         // Sends movie name to be added and retrieves bool about succesfulness
         StringContainer stringContainer = new StringContainer() { str = movieName };
-        BoolContainer answer = await Http.PostJsonAsync<BoolContainer>("Calendar/PostMovieString", stringContainer);
+        ResultContainer answer = await Http.PostJsonAsync<ResultContainer>("Calendar/AddMovie", stringContainer);
 
         // Process depending on result
         if (answer.result)
         {
-            addMovieResultString = "Nice";
+            addMovieResultString = $"{movieName} added to followed media";
         }
         else
-            addMovieResultString = "Damn";
+            addMovieResultString = $"{movieName} could not be added <br />{answer.errorMessage}";
     }
 
     public async Task AddSeries()
@@ -94,21 +113,23 @@ else
 
     public async Task GetAllEpisodes()
     {
-        // Sends movie name to be added and retrieves bool about succesfulness
-        StringContainer stringContainer = new StringContainer() { str = "Insert Month Here In The Future" };
-        List<Episode> episodeList = await Http.PostJsonAsync<List<Episode>>("Calendar/GetAllEpisodes", stringContainer);
+        EpNum = "hej";
+        List<Episode> episodeList = await Http.PostJsonAsync<List<Episode>>("Calendar/GetAllEpisodes", new DateTime());
 
+        EpNum = "hej2";
         // Process depending on result
         foreach (Episode episode in episodeList)
         {
             AppointmentData epField = new AppointmentData();
             epField.Id = 1;
-            epField.Subject = episode.episodeName;
+            epField.Subject = episode.SeriesName;
             epField.StartTime = ConvertStrDateToDateTime(episode.firstAired);
             epField.EndTime = epField.StartTime;
 
             DataSource.Add(epField);
         }
+        EpNum = episodeList.Count().ToString();
+        loaded = true;
     }
 
     private DateTime ConvertStrDateToDateTime(string dateString)

@@ -10,13 +10,11 @@ namespace MediaCalender.Server.CsClasses
 {
     public class SeriesLibary
     {
-        //Database database;
-        //SeriesLibary seriesLibary;
-        //public SeriesLibary(Database database, SeriesLibary seriesLibary)
-        //{
-        //    this.database = database;
-        //    this.seriesLibary = seriesLibary;
-        //}
+        Database database;
+        public SeriesLibary(Database database)
+        {
+            this.database = database;
+        }
 
         public async Task<ResultContainer> AddSeries(string seriesName, Database database)
         {
@@ -34,23 +32,20 @@ namespace MediaCalender.Server.CsClasses
                 return result;
             }
 
+            // Check if it's already added
+            if (CheckIfSeriesIsInDB(seriesId))
+            {
+                result.result = false;
+                result.errorMessage = "Already added";
+                return result;
+            }
+
             // Gets series
             series = await getter.GetSeries(seriesId);
 
             if (series.seriesName != null)
             {
-                // Adds series to database
-                List<Episode> episodes = await AddSeason(series.id, database);
-                series.episodes = episodes;
-
-                database.Add(series);
-                foreach (Episode episode in episodes)
-                {
-                    database.Add(episode);
-                }
-                database.SaveChanges();
-                result.result = true;
-
+                result = await addAllSeriesEpisodes(series);
             }
             else
             {
@@ -61,7 +56,28 @@ namespace MediaCalender.Server.CsClasses
 
             return result;
         }
-        public async Task<List<Episode>> AddSeason(int seriesId, Database database)
+
+        private async Task<ResultContainer> addAllSeriesEpisodes(Series series)
+        {
+            ResultContainer result = new ResultContainer();
+            
+            // Adds series to database
+            List<Episode> episodes = await AddSeason(series.id, database);
+            series.episodes = episodes;
+
+            database.Add(series);
+            foreach (Episode episode in episodes)
+            {
+                episode.SeriesName = series.seriesName;
+                database.Add(episode);
+            }
+            database.SaveChanges();
+
+            result.result = true;
+            return result;
+        } 
+
+        private async Task<List<Episode>> AddSeason(int seriesId, Database database)
         {
             List<Episode> episodes;
             ResultContainer result = new ResultContainer();
@@ -78,6 +94,15 @@ namespace MediaCalender.Server.CsClasses
 
             //result.result = true;
             return episodes;
+        }
+
+        private bool CheckIfSeriesIsInDB(int seriesId)
+        {
+            bool isInDb;
+
+            isInDb = database.SeriesLibary.Any(s => s.id == seriesId);
+
+            return isInDb;
         }
     }
 }
