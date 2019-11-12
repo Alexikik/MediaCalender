@@ -12,5 +12,6 @@ namespace MediaCalender.Shared.Containers
         public DateTime EndTime { get; set; }
         public bool IsAllDay = true;
         public bool IsReadonly = true;
+        public string Color { get; set; }
     }
 }

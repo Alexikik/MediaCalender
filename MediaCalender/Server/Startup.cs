@@ -31,7 +31,7 @@ namespace MediaCalender.Server
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddMvc().AddNewtonsoftJson();
-            services.AddScoped<LoginSystem>();
+            services.AddSingleton<LoginSystem>();
             services.AddScoped<SeriesLibary>();
             services.AddScoped<MovieLibary>();
             services.AddDbContext<Database>(options =>

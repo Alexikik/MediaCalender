@@ -32,12 +32,14 @@ namespace MediaCalender.Server.Controllers
             return result;
         }
 
-        //[HttpGet("[action]")]
-        //public BoolContainer SendLoginAnswer()
-        //{
-        //    BoolContainer answer = new BoolContainer() { result = Program.Classes.account.loginStatus };
-        //    return answer;
-        //}
+        [HttpGet("[action]")]
+        public BoolContainer CheckLoginStatus()
+        {
+            BoolContainer loginStatus = new BoolContainer();
+            loginStatus.result = loginSystem.loginStatus;
+            return loginStatus;
+        }
+
         #endregion LoginSystem
 
 

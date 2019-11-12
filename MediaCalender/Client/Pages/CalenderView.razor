@@ -13,6 +13,10 @@
 {
     <p><em>Loading...</em></p>
 }
+else if (loginStatus == false)
+{
+    <p><em>Not logged in!</em></p>
+}
 else
 {
     @*Movie string to test connection, *@
@@ -35,10 +39,6 @@ else
     @*<p style="white-space: pre-line">@addMovieResultString</p>*@
 
     <p>Number: @EpNum</p>
-    @*<div>
-            Amount of episodes: <input type="text" style="margin-left:2px" id="EpNum" name="EpNum" @bind="EpNum" /><br>
-        </div>*@
-    //Height="650px" Width="700px"
 
     <EjsSchedule TValue="AppointmentData"
                  Height=700px
@@ -57,28 +57,31 @@ else
 }
 
 @code {
+    List<AppointmentData> DataSource = new List<AppointmentData>();
     StringContainer movieString;
     string movieName, seriesName, addMovieResultString, addSeriesResultString, EpNum;
-    bool loaded = false;
+    bool loaded = false, loginStatus;
     #region Calendar things
     // Needed because of bug in Blazor https://github.com/Joelius300/ChartJSBlazor/issues/93
     private ReferenceConverter ReferenceConverter = new ReferenceConverter(typeof(EjsSchedule<object>));
-
+    // Idk
     private void begin(Syncfusion.EJ2.Blazor.SplitButtons.ProgressEventArgs args)
     {
         args.Step = 2;
     }
-    List<AppointmentData> DataSource = new List<AppointmentData>()
-    {
-        //new AppointmentData { Id = 1, Subject = "Paris", StartTime = new DateTime(2018, 2, 13, 10, 0, 0) , EndTime = new DateTime(2018, 2, 13, 12, 0, 0) },
-        //new AppointmentData { Id = 1, Subject = "Germany", StartTime = new DateTime(2018, 2, 15, 10, 0, 0) , EndTime = new DateTime(2018, 2, 15, 12, 0, 0) }
-    };
-
     #endregion Calendar things
 
     protected override async Task OnInitializedAsync()
     {
+        loginStatus = await CheckLoginStatus();
         await GetAllEpisodes();
+    }
+
+    private async Task<bool> CheckLoginStatus()
+    {
+        BoolContainer loginStatus;
+        loginStatus = await Http.GetJsonAsync<BoolContainer>("Login/CheckLoginStatus");
+        return loginStatus.result;
     }
 
     public async Task AddMovie()
@@ -125,6 +128,7 @@ else
             epField.Subject = episode.SeriesName;
             epField.StartTime = ConvertStrDateToDateTime(episode.firstAired);
             epField.EndTime = epField.StartTime;
+            epField.Color = "#357cd2";
 
             DataSource.Add(epField);
         }

@@ -22,7 +22,8 @@ namespace MediaCalender.Server.CsClasses
         // Logs users in
         public bool Login(LoginCredentials credentials, Database database)
         {
-            return database.Users.Any(u => (u.Username == credentials.username) && (u.Password == credentials.password));
+            loginStatus = database.Users.Any(u => (u.Username == credentials.username) && (u.Password == credentials.password));
+            return loginStatus;
         }
     }
 }
