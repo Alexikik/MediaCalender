@@ -13,8 +13,6 @@ namespace MediaCalender.Shared.ContentTypes
         {
             Episode episode = new Episode();
             string temp;
-            int intTemp;
-            bool result;
 
             episode.id = this.data[episodeToExtract].id;
             episode.airedSeason = this.data[episodeToExtract].airedSeason;
@@ -28,7 +26,7 @@ namespace MediaCalender.Shared.ContentTypes
             }
             else
             {
-                episode.firstAired = DateTime.Now;
+                episode.firstAired = new DateTime(0001,1,1);
             }
 
             if (this.data[episodeToExtract].guestStars.Count > 0)

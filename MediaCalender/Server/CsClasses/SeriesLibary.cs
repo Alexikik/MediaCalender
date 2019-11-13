@@ -69,7 +69,7 @@ namespace MediaCalender.Server.CsClasses
             foreach (Episode episode in episodes)
             {
                 episode.SeriesName = series.seriesName;
-                if (episode.airedSeason != 0)
+                if (episode.firstAired != new DateTime(0001, 1, 1))
                 {
                     database.Add(episode);
                 }
@@ -78,7 +78,7 @@ namespace MediaCalender.Server.CsClasses
 
             result.result = true;
             return result;
-        } 
+        }
 
         private async Task<List<Episode>> AddSeason(int seriesId, Database database)
         {

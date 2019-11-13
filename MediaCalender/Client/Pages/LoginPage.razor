@@ -18,10 +18,20 @@
 <p>@loginResultString</p>
 
 
+
+
+
 @code {
     string uname, pword;
     string loginResultString;
+    bool loginStatus = false;
 
+    protected override async Task OnInitializedAsync()
+    {
+        loginStatus = await CheckLoginStatus();
+        if (loginStatus)
+            RouteToCalendar();
+    }
 
     public async Task Login()
     {
@@ -38,6 +48,17 @@
         }
         else
             loginResultString = "Login denied";
+    }
 
+    private void RouteToCalendar()
+    {
+        navigationManager.NavigateTo("Calender");   // Navigates to Calender view
+    }
+
+    private async Task<bool> CheckLoginStatus()
+    {
+        BoolContainer loginStatus;
+        loginStatus = await Http.GetJsonAsync<BoolContainer>("Login/CheckLoginStatus");
+        return loginStatus.result;
     }
 }

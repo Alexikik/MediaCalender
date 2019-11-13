@@ -39,9 +39,12 @@ else
     @*<p style="white-space: pre-line">@addMovieResultString</p>*@
 
     <p>Number: @EpNum</p>
-    <button class="btn btn-primary" @onclick="AddMovie">Clear database</button>
+    <button class="btn btn-primary" @onclick="UpdateSchedule">Update Calendar</button>
+    <button class="btn btn-primary" @onclick="ClearDatabase">Clear database</button>
+    <p>@((MarkupString)clearDatabaseResultString)</p>
 
-    <EjsSchedule TValue="AppointmentData"
+    <EjsSchedule @ref="ScheduleObj"
+                 TValue="AppointmentData"
                  Height=700px
                  Width="auto"
                  CurrentView="View.Month"
@@ -60,7 +63,8 @@ else
 @code {
     List<AppointmentData> DataSource = new List<AppointmentData>();
     StringContainer movieString;
-    string movieName, seriesName, addMovieResultString, addSeriesResultString, EpNum;
+    EjsSchedule<AppointmentData> ScheduleObj;
+    string movieName, seriesName, addMovieResultString, addSeriesResultString, EpNum, clearDatabaseResultString;
     bool loaded = false, loginStatus;
     #region Calendar things
     // Needed because of bug in Blazor https://github.com/Joelius300/ChartJSBlazor/issues/93
@@ -104,7 +108,11 @@ else
     {
         // Sends movie name to be added and retrieves bool about succesfulness
         StringContainer stringContainer = new StringContainer() { str = seriesName };
-        ResultContainer answer = await Http.PostJsonAsync<ResultContainer>("Calendar/AddFolSeries", stringContainer);
+        Task<ResultContainer> taskAnswer = Http.PostJsonAsync<ResultContainer>("Calendar/AddFolSeries", stringContainer);
+
+        addSeriesResultString = "Adding series in progress";
+
+        ResultContainer answer = await taskAnswer;
 
         // Process depending on result
         if (answer.result)
@@ -117,16 +125,17 @@ else
 
     public async Task GetAllEpisodes()
     {
-        EpNum = "hej";
         List<Episode> episodeList = await Http.PostJsonAsync<List<Episode>>("Calendar/GetAllEpisodes", new DateTime());
 
-        EpNum = "hej2";
         // Process depending on result
         foreach (Episode episode in episodeList.Reverse<Episode>())
         {
             AppointmentData epField = new AppointmentData();
             epField.Id = 1;
-            epField.Subject = episode.SeriesName + $" [S{episode.airedSeason}E{episode.airedEpisodeNumber}]";
+            if (episode.airedSeason == 0)
+                epField.Subject = episode.SeriesName + $" [Special {episode.airedEpisodeNumber}]";
+            else
+                epField.Subject = episode.SeriesName + $" [S{episode.airedSeason}E{episode.airedEpisodeNumber}]";
             epField.StartTime = episode.firstAired;
             epField.EndTime = epField.StartTime;
             epField.Color = "#357cd2";
@@ -146,9 +155,21 @@ else
         return date;
     }
 
-    private async void ClearDatabase()
+    private async Task ClearDatabase()
     {
         StringContainer stringContainer = new StringContainer() { str = movieName };
-        await Http.PostJsonAsync("Calendar/ClearDatabase", stringContainer);
+        ResultContainer answer = await Http.PostJsonAsync<ResultContainer>("Calendar/ClearDatabase", stringContainer);
+
+        if (answer.result)
+            clearDatabaseResultString = $"Database have been cleared";
+        else
+            clearDatabaseResultString = $"Database could not be cleared <br />{answer.errorMessage}";
+    }
+    private async Task UpdateSchedule()
+    {
+        Task task = GetAllEpisodes();
+        DataSource.Clear();
+        await task;
+        ScheduleObj.Refresh();
     }
 }

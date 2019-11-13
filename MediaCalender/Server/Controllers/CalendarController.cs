@@ -76,17 +76,32 @@ namespace MediaCalender.Server.Controllers
         }
 
         [HttpPost("[action]")]
-        public void ClearDatabase()
+        public ResultContainer ClearDatabase()
         {
-            foreach (Episode episode in database.EpisodeLibary)
+            ResultContainer result = new ResultContainer();
+
+            try
             {
-                database.Remove(episode);
+                foreach (Episode episode in database.EpisodeLibary)
+                {
+                    database.Remove(episode);
+                }
+                foreach (Series series in database.SeriesLibary)
+                {
+                    database.Remove(series);
+                }
+                database.SaveChanges();
+
+                result.result = true;
+                return result;
             }
-            foreach (Series series in database.SeriesLibary)
+            catch (Exception)
             {
-                database.Remove(series);
+                result.result = false;
+                result.errorMessage = "Error clearing database";
             }
-            database.SaveChanges();
+
+            return new ResultContainer() { result = false, errorMessage = "Unknown" };
         }
 
 
