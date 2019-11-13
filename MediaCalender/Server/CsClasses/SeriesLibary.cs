@@ -69,7 +69,10 @@ namespace MediaCalender.Server.CsClasses
             foreach (Episode episode in episodes)
             {
                 episode.SeriesName = series.seriesName;
-                database.Add(episode);
+                if (episode.airedSeason != 0)
+                {
+                    database.Add(episode);
+                }
             }
             database.SaveChanges();
 
@@ -103,6 +106,17 @@ namespace MediaCalender.Server.CsClasses
             isInDb = database.SeriesLibary.Any(s => s.id == seriesId);
 
             return isInDb;
+        }
+
+        public async Task<ResultContainer> DownloadAllEpisodesForAllSeries()
+        {
+            foreach (Series series in database.SeriesLibary)
+            {
+                await addAllSeriesEpisodes(series);
+            }
+            
+
+            return new ResultContainer();
         }
     }
 }

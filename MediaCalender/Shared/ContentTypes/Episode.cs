@@ -14,7 +14,7 @@ namespace MediaCalender.Shared.ContentTypes
         public int airedSeasonID { get; set; }
         public int airedEpisodeNumber { get; set; }
         public string episodeName { get; set; }
-        public string firstAired { get; set; }
+        public DateTime firstAired { get; set; }
         public string guestStars { get; set; }          // str
         //public List<object> guestStars { get; set; }
         public string director { get; set; }

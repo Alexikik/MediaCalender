@@ -23,6 +23,8 @@ namespace MediaCalender.Server.CsClasses
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             optionsBuilder.UseSqlite("Data Source=DatabaseFile.sqlite");
+            //optionsBuilder.UseSqlite(@"data source = D:\home\site\wwwroot\App_Data\DatabaseFile.sqlite");
+            
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)

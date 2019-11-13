@@ -39,6 +39,7 @@ else
     @*<p style="white-space: pre-line">@addMovieResultString</p>*@
 
     <p>Number: @EpNum</p>
+    <button class="btn btn-primary" @onclick="AddMovie">Clear database</button>
 
     <EjsSchedule TValue="AppointmentData"
                  Height=700px
@@ -121,12 +122,12 @@ else
 
         EpNum = "hej2";
         // Process depending on result
-        foreach (Episode episode in episodeList)
+        foreach (Episode episode in episodeList.Reverse<Episode>())
         {
             AppointmentData epField = new AppointmentData();
             epField.Id = 1;
-            epField.Subject = episode.SeriesName;
-            epField.StartTime = ConvertStrDateToDateTime(episode.firstAired);
+            epField.Subject = episode.SeriesName + $" [S{episode.airedSeason}E{episode.airedEpisodeNumber}]";
+            epField.StartTime = episode.firstAired;
             epField.EndTime = epField.StartTime;
             epField.Color = "#357cd2";
 
@@ -143,5 +144,11 @@ else
         date = DateTime.Parse(dateString);
 
         return date;
+    }
+
+    private async void ClearDatabase()
+    {
+        StringContainer stringContainer = new StringContainer() { str = movieName };
+        await Http.PostJsonAsync("Calendar/ClearDatabase", stringContainer);
     }
 }

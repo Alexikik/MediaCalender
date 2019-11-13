@@ -209,7 +209,7 @@ namespace MediaCalender.Server.CsClasses
             string sql = $"Insert into episodeLibary (Id, AiredSeason, AiredSeasonId, AiredEpisodeNumber, EpisodeName, FirstAired, GuestStars, Director, Directors, Writers, Overview, ProductionCode, ShowUrl, LastUpdated, AbsoluteNumber, Filename, SeriesId, LastUpdatedBy, ThumbAdded, ThumbWidth, ThumbHeight, ImdbId, SiteRating, SiteRatingCount)" +
                 $" values ('{episode.id}', '{episode.airedSeason}', '{episode.airedSeasonID}'" +
                 $", '{episode.airedEpisodeNumber}', '{episode.episodeName.Replace("'", "´")}'" +
-                $", '{episode.firstAired.Replace("'", "´")}', '{episode.guestStars.Replace("'", "´")}'" +
+                //$", '{episode.firstAired.Replace("'", "´")}', '{episode.guestStars.Replace("'", "´")}'" +
                 $", '{episode.director.Replace("'", "´")}', '{episode.directors.Replace("'", "´")}'" +
                 $", '{episode.writers.Replace("'", "´")}', '{episode.overview.Replace("'", "´")}'" +
                 $", '{episode.productionCode.Replace("'", "´")}', '{episode.showUrl.Replace("'", "´")}'" +
@@ -236,7 +236,7 @@ namespace MediaCalender.Server.CsClasses
                 episode.airedSeason = Convert.ToInt32(reader["AiredSeason"]);
                 episode.airedEpisodeNumber = Convert.ToInt32(reader["AiredEpisodeNumber"]);
                 episode.episodeName = reader["EpisodeName"].ToString();
-                episode.firstAired = reader["FirstAired"].ToString();
+                //episode.firstAired = reader["FirstAired"].ToString();
                 episode.overview = reader["Overview"].ToString();
 
                 episodeList.Add(episode);

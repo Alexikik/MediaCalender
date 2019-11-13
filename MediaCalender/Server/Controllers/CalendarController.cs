@@ -38,6 +38,7 @@ namespace MediaCalender.Server.Controllers
         public ResultContainer AddMovie([FromBody]StringContainer stringContainer)
         {
             ResultContainer result;
+
             result = movieLibary.AddMovie(stringContainer.str);
 
             return result;
@@ -48,20 +49,46 @@ namespace MediaCalender.Server.Controllers
         public List<Episode> GetAllEpisodes()
         {
             List<Episode> episodeList = new List<Episode>();
-            episodeList = database.EpisodeLibary.ToList();
+            episodeList = database.EpisodeLibary.Where(e => e.firstAired > DateTime.Now.AddMonths(-1)).ToList();
+
+            //episodeList = database.EpisodeLibary.Where(s => s.Key < 25).ToList();
             //episodeList = database.EpisodeLibary.Where(s => s.Key < 25).ToList();
             //episodeList.Add(database.EpisodeLibary.Where(s => s.Key == 167).First());
 
             foreach (Episode episode in episodeList)
             {
-                if (episode.firstAired == "")
+                if (episode.firstAired == null)
                 {
-                    episode.firstAired = DateTime.Now.ToString();
+                    episode.firstAired = DateTime.Now;
                 }
             }
 
+            //foreach (Series series in database.SeriesLibary)
+            //{
+            //    foreach (Episode episode in series.episodes)
+            //    {
+            //        episodeList.Add(episode);
+            //    }
+            //}
+
+
             return episodeList;
         }
+
+        [HttpPost("[action]")]
+        public void ClearDatabase()
+        {
+            foreach (Episode episode in database.EpisodeLibary)
+            {
+                database.Remove(episode);
+            }
+            foreach (Series series in database.SeriesLibary)
+            {
+                database.Remove(series);
+            }
+            database.SaveChanges();
+        }
+
 
 
 

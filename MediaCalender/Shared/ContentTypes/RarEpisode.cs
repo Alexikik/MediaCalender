@@ -21,7 +21,15 @@ namespace MediaCalender.Shared.ContentTypes
             episode.airedSeasonID = this.data[episodeToExtract].airedSeasonID;
             episode.airedEpisodeNumber = this.data[episodeToExtract].airedEpisodeNumber;
             episode.episodeName = this.data[episodeToExtract].episodeName;
-            episode.firstAired = this.data[episodeToExtract].firstAired;
+            DateTime tempDateTime = new DateTime();
+            if (DateTime.TryParse(this.data[episodeToExtract].firstAired, out tempDateTime))
+            {
+                episode.firstAired = tempDateTime;
+            }
+            else
+            {
+                episode.firstAired = DateTime.Now;
+            }
 
             if (this.data[episodeToExtract].guestStars.Count > 0)
             {
