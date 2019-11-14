@@ -8,13 +8,13 @@ using MediaCalender.Shared;
 
 namespace MediaCalender.Server.CsClasses
 {
-    public class LoginSystem
+    public class LoginSystemOld
     {
         // Database database { get; }
         public bool loginStatus { get; set; }
         
 
-        public LoginSystem()
+        public LoginSystemOld()
         {
             
         }

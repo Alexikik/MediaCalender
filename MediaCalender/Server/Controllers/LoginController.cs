@@ -8,6 +8,7 @@ using MediaCalender.Shared.Containers;
 using MediaCalender.Server.CsClasses;
 
 
+
 namespace MediaCalender.Server.Controllers
 {
     [ApiController]
@@ -15,8 +16,8 @@ namespace MediaCalender.Server.Controllers
     public class LoginController : ControllerBase
     {
         public Database database;
-        public LoginSystem loginSystem;
-        public LoginController(Database database, LoginSystem loginSystem)
+        public LoginSystemOld loginSystem;
+        public LoginController(Database database, LoginSystemOld loginSystem)
         {
             this.database = database;
             this.loginSystem = loginSystem;

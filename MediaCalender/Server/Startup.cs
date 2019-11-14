@@ -14,6 +14,12 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.HttpsPolicy;
+using MediaCalender.Server.LoginSystem;
+// Login system
+using Microsoft.AspNetCore.Components.Authorization;
+using Microsoft.AspNetCore.Identity;
+using MediaCalender.Server.LoginSystem.Users;
+using MediaCalender.Server.LoginSystem.Auth;
 
 namespace MediaCalender.Server
 {
@@ -31,7 +37,7 @@ namespace MediaCalender.Server
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddMvc().AddNewtonsoftJson();
-            services.AddSingleton<LoginSystem>();
+            services.AddSingleton<LoginSystemOld>();
             services.AddScoped<SeriesLibary>();
             services.AddScoped<MovieLibary>();
             services.AddDbContext<Database>(options =>
@@ -39,11 +45,20 @@ namespace MediaCalender.Server
                 //options.UseSqlite(Configuration.GetConnectionString("DatabaseFile"));
                 options.UseSqlite("Data Source=DatabaseFile.sqlite");
             });
+            services.AddDbContext<LoginSystemDatabase>(options =>
+                options.UseSqlServer(
+                    Configuration.GetConnectionString("DefaultConnection")));
+
+            services.AddDefaultIdentity<ApplicationUser>()
+                    .AddEntityFrameworkStores<LoginSystemDatabase>()
+                    .AddDefaultUI().AddClaimsPrincipalFactory<MyUserClaimsPrincipalFactory>();
+            services.AddScoped<AuthenticationStateProvider, RevalidatingIdentityAuthenticationStateProvider<ApplicationUser>>();
             services.AddResponseCompression(opts =>
             {
                 opts.MimeTypes = ResponseCompressionDefaults.MimeTypes.Concat(
                     new[] { "application/octet-stream" });
             });
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

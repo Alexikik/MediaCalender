@@ -129,7 +129,7 @@ namespace MediaCalender.Shared.ContentTypes
         public object airsAfterSeason { get; set; }
         public object airsBeforeSeason { get; set; }
         public object airsBeforeEpisode { get; set; }
-        public int thumbAuthor { get; set; }
+        //public int thumbAuthor { get; set; }
         public string thumbAdded { get; set; }
         public string thumbWidth { get; set; }
         public string thumbHeight { get; set; }
