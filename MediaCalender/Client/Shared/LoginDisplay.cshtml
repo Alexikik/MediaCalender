@@ -1,0 +1,15 @@
+﻿<AuthorizeView>
+    <Authorized>
+        <a href="">Hello, @context.User.FindFirst("FirstName").Value</a>
+    </Authorized>
+    <NotAuthorized>
+        <a href="Register">Register</a>
+        <a href="Login">Log in</a>
+    </NotAuthorized>
+</AuthorizeView>
+
+
+@*@page
+@model MediaCalender.Client.Shared.IndexModel
+@{
+}*@
